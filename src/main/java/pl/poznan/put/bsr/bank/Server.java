@@ -15,17 +15,23 @@ import java.net.URI;
  * @author Kamil Walkowiak
  */
 public class Server {
+    private static HttpServer server;
+
     public static void main(String[] args) throws IOException {
-        //Initialize REST
+        initializeRESTServer();
+        initializeSOAPServer();
+        server.start();
+    }
+
+    private static void initializeRESTServer() {
         URI baseUri = UriBuilder.fromUri("http://localhost/").port(8000).build();
         ResourceConfig config = new ResourceConfig().packages("rest");
-        HttpServer server = GrizzlyHttpServerFactory.createHttpServer(baseUri, config, false);
+        server = GrizzlyHttpServerFactory.createHttpServer(baseUri, config, false);
+    }
 
-        //Initialize WS SOAP
+    private static void initializeSOAPServer() {
         NetworkListener networkListener = new NetworkListener("jaxws-listener", "0.0.0.0", 8080);
         server.getServerConfiguration().addHttpHandler(new JaxwsHandler(new ExampleService()), "/add");
         server.addListener(networkListener);
-
-        server.start();
     }
 }
