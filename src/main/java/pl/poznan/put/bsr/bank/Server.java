@@ -5,7 +5,7 @@ import org.glassfish.grizzly.http.server.NetworkListener;
 import org.glassfish.grizzly.jaxws.JaxwsHandler;
 import org.glassfish.jersey.grizzly2.httpserver.GrizzlyHttpServerFactory;
 import org.glassfish.jersey.server.ResourceConfig;
-import pl.poznan.put.bsr.bank.service.ExampleService;
+import pl.poznan.put.bsr.bank.services.ExampleService;
 
 import javax.ws.rs.core.UriBuilder;
 import java.io.IOException;

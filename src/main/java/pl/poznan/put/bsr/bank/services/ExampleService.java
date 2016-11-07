@@ -1,4 +1,4 @@
-package pl.poznan.put.bsr.bank.service;
+package pl.poznan.put.bsr.bank.services;
 
 import javax.jws.WebMethod;
 import javax.jws.WebParam;
