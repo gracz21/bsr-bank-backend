@@ -5,7 +5,9 @@ import org.glassfish.grizzly.http.server.NetworkListener;
 import org.glassfish.grizzly.jaxws.JaxwsHandler;
 import org.glassfish.jersey.grizzly2.httpserver.GrizzlyHttpServerFactory;
 import org.glassfish.jersey.server.ResourceConfig;
+import pl.poznan.put.bsr.bank.models.User;
 import pl.poznan.put.bsr.bank.services.ExampleService;
+import pl.poznan.put.bsr.bank.utils.DataStoreHandlerUtil;
 
 import javax.ws.rs.core.UriBuilder;
 import java.io.IOException;
@@ -18,6 +20,7 @@ public class Server {
     private static HttpServer server;
 
     public static void main(String[] args) throws IOException {
+        DataStoreHandlerUtil.getInstance().initializeDataStore();
         initializeRESTServer();
         initializeSOAPServer();
         server.start();
