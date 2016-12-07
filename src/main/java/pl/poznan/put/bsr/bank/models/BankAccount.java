@@ -17,7 +17,7 @@ import java.util.UUID;
 /**
  * @author Kamil Walkowiak
  */
-@Entity("accounts")
+@Entity("bankAccounts")
 public class BankAccount {
     @Id
     private ObjectId id;

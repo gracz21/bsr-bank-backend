@@ -5,6 +5,7 @@ import org.glassfish.grizzly.http.server.NetworkListener;
 import org.glassfish.grizzly.jaxws.JaxwsHandler;
 import org.glassfish.jersey.grizzly2.httpserver.GrizzlyHttpServerFactory;
 import org.glassfish.jersey.server.ResourceConfig;
+import pl.poznan.put.bsr.bank.services.BankAccountService;
 import pl.poznan.put.bsr.bank.services.UserService;
 import pl.poznan.put.bsr.bank.utils.DataStoreHandlerUtil;
 
@@ -34,6 +35,7 @@ public class Server {
     private static void initializeSOAPServer() {
         NetworkListener networkListener = new NetworkListener("jaxws-listener", "0.0.0.0", 8080);
         server.getServerConfiguration().addHttpHandler(new JaxwsHandler(new UserService()), "/users");
+        server.getServerConfiguration().addHttpHandler(new JaxwsHandler(new BankAccountService()), "/bankAccounts");
         server.addListener(networkListener);
     }
 }
