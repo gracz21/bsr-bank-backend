@@ -2,6 +2,7 @@ package pl.poznan.put.bsr.bank.services;
 
 import com.mongodb.DuplicateKeyException;
 import org.mongodb.morphia.Datastore;
+import pl.poznan.put.bsr.bank.models.Session;
 import pl.poznan.put.bsr.bank.models.User;
 import pl.poznan.put.bsr.bank.services.exceptions.BankServiceException;
 import pl.poznan.put.bsr.bank.utils.DataStoreHandlerUtil;
@@ -42,7 +43,9 @@ public class UserService {
         if(user == null) {
             throw new BankServiceException("Wrong user name");
         } else if(Arrays.equals(user.getPassword(), Base64.getEncoder().encode(password.getBytes()))) {
-            return UUID.randomUUID().toString();
+            Session session = new Session(UUID.randomUUID().toString(), user);
+            datastore.save(session);
+            return session.getSessionId();
         } else {
             throw new BankServiceException("Wrong password");
         }
