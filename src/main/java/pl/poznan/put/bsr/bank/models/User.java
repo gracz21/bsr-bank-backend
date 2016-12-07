@@ -25,19 +25,19 @@ public class User {
     @NotNull
     private byte[] password;
     @Reference
-    private List<Account> accounts;
+    private List<BankAccount> bankAccounts;
 
     public User(String userName, String password) {
         this.userName = userName;
         this.password = Base64.getEncoder().encode(password.getBytes());
-        accounts = new ArrayList<>();
+        bankAccounts = new ArrayList<>();
     }
 
-    public List<Account> getAccounts() {
-        return Collections.unmodifiableList(accounts);
+    public List<BankAccount> getBankAccounts() {
+        return Collections.unmodifiableList(bankAccounts);
     }
 
-    public void addAccount(Account account) {
-        accounts.add(account);
+    public void addAccount(BankAccount bankAccount) {
+        bankAccounts.add(bankAccount);
     }
 }

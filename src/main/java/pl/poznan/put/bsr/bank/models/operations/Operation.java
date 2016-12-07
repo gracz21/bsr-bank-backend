@@ -1,6 +1,6 @@
 package pl.poznan.put.bsr.bank.models.operations;
 
-import pl.poznan.put.bsr.bank.models.Account;
+import pl.poznan.put.bsr.bank.models.BankAccount;
 
 import java.math.BigDecimal;
 
@@ -35,7 +35,7 @@ public abstract class Operation {
         return targetAccountNo;
     }
 
-    public void doOperation(Account account) {
+    public void doOperation(BankAccount bankAccount) {
 
     }
 }

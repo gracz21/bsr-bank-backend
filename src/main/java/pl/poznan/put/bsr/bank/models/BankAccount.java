@@ -18,7 +18,7 @@ import java.util.UUID;
  * @author Kamil Walkowiak
  */
 @Entity("accounts")
-public class Account {
+public class BankAccount {
     @Id
     private ObjectId id;
     @NotNull
@@ -28,7 +28,7 @@ public class Account {
     private BigDecimal balance;
     private List<Operation> history;
 
-    public Account() {
+    public BankAccount() {
         accountNo = "48" + ConstantsUtil.BANK_ID + UUID.randomUUID().hashCode();
         balance = new BigDecimal(0.0);
         history = new ArrayList<>();
