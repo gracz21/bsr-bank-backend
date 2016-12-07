@@ -25,6 +25,9 @@ public class Session {
     @NotNull
     private String timestamp;
 
+    public Session() {
+    }
+
     public Session(String sessionId, User user) {
         this.sessionId = sessionId;
         this.user = user;

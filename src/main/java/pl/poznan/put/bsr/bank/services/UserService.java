@@ -7,19 +7,24 @@ import pl.poznan.put.bsr.bank.models.User;
 import pl.poznan.put.bsr.bank.services.exceptions.BankServiceException;
 import pl.poznan.put.bsr.bank.utils.DataStoreHandlerUtil;
 
+import javax.annotation.Resource;
 import javax.jws.WebMethod;
 import javax.jws.WebParam;
 import javax.jws.WebService;
 import javax.xml.bind.annotation.XmlElement;
-import java.util.Arrays;
-import java.util.Base64;
-import java.util.UUID;
+import javax.xml.ws.WebServiceContext;
+import javax.xml.ws.handler.MessageContext;
+import java.awt.*;
+import java.util.*;
 
 /**
  * @author Kamil Walkowiak
  */
 @WebService
 public class UserService {
+    @Resource
+    private WebServiceContext context;
+
     @WebMethod
     public void register(@WebParam(name = "userName") @XmlElement(required=true) String userName,
                          @WebParam(name = "password") @XmlElement(required=true) String password,
@@ -48,6 +53,46 @@ public class UserService {
             return session.getSessionId();
         } else {
             throw new BankServiceException("Wrong password");
+        }
+    }
+
+    @WebMethod
+    public void logout() throws BankServiceException {
+        String sessionId = getSessionIdFromHeaders();
+        Datastore datastore =  DataStoreHandlerUtil.getInstance().getDataStore();
+        Session session = datastore.find(Session.class).field("sessionId").equal(sessionId).get();
+        if(session != null) {
+            datastore.delete(session);
+        } else {
+            throw new BankServiceException("User is not logged in or session has expired");
+        }
+    }
+
+    @WebMethod
+    public void deleteCurrentUser() throws BankServiceException {
+        String sessionId = getSessionIdFromHeaders();
+        Datastore datastore =  DataStoreHandlerUtil.getInstance().getDataStore();
+        Session session = datastore.find(Session.class).field("sessionId").equal(sessionId).get();
+        if(session != null) {
+            User user = session.getUser();
+            datastore.delete(session);
+            if(user != null) {
+                datastore.delete(user);
+            } else {
+                throw new BankServiceException("User already not exists");
+            }
+        } else {
+            throw new BankServiceException("User is not logged in or session has expired");
+        }
+    }
+
+    private String getSessionIdFromHeaders() throws BankServiceException {
+        Map headers = (Map)context.getMessageContext().get(MessageContext.HTTP_REQUEST_HEADERS);
+        ArrayList sessionId = (ArrayList)headers.get("Session-Id");
+        if(sessionId != null) {
+            return (String)sessionId.get(0);
+        } else {
+            throw new BankServiceException("Session id is missing");
         }
     }
 }
