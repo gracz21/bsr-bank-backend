@@ -5,6 +5,7 @@ import org.mongodb.morphia.Datastore;
 import pl.poznan.put.bsr.bank.models.Session;
 import pl.poznan.put.bsr.bank.models.User;
 import pl.poznan.put.bsr.bank.services.exceptions.BankServiceException;
+import pl.poznan.put.bsr.bank.utils.AuthUtil;
 import pl.poznan.put.bsr.bank.utils.DataStoreHandlerUtil;
 
 import javax.annotation.Resource;
@@ -13,8 +14,6 @@ import javax.jws.WebParam;
 import javax.jws.WebService;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.ws.WebServiceContext;
-import javax.xml.ws.handler.MessageContext;
-import java.awt.*;
 import java.util.*;
 
 /**
@@ -58,41 +57,24 @@ public class UserService {
 
     @WebMethod
     public void logout() throws BankServiceException {
-        String sessionId = getSessionIdFromHeaders();
+        String sessionId = AuthUtil.getSessionIdFromHeaders(context);
         Datastore datastore =  DataStoreHandlerUtil.getInstance().getDataStore();
-        Session session = datastore.find(Session.class).field("sessionId").equal(sessionId).get();
-        if(session != null) {
-            datastore.delete(session);
-        } else {
-            throw new BankServiceException("User is not logged in or session has expired");
-        }
+        Session session = AuthUtil.getSessionObject(sessionId);
+        datastore.delete(session);
     }
 
     @WebMethod
     public void deleteCurrentUser() throws BankServiceException {
-        String sessionId = getSessionIdFromHeaders();
+        String sessionId = AuthUtil.getSessionIdFromHeaders(context);
         Datastore datastore =  DataStoreHandlerUtil.getInstance().getDataStore();
-        Session session = datastore.find(Session.class).field("sessionId").equal(sessionId).get();
-        if(session != null) {
-            User user = session.getUser();
-            datastore.delete(session);
-            if(user != null) {
-                datastore.delete(user);
-            } else {
-                throw new BankServiceException("User already not exists");
-            }
-        } else {
-            throw new BankServiceException("User is not logged in or session has expired");
-        }
-    }
+        Session session = AuthUtil.getSessionObject(sessionId);
+        User user = session.getUser();
 
-    private String getSessionIdFromHeaders() throws BankServiceException {
-        Map headers = (Map)context.getMessageContext().get(MessageContext.HTTP_REQUEST_HEADERS);
-        ArrayList sessionId = (ArrayList)headers.get("Session-Id");
-        if(sessionId != null) {
-            return (String)sessionId.get(0);
+        datastore.delete(session);
+        if(user != null) {
+            datastore.delete(user);
         } else {
-            throw new BankServiceException("Session id is missing");
+            throw new BankServiceException("User already not exists");
         }
     }
 }
