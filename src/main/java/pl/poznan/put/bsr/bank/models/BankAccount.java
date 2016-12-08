@@ -2,6 +2,7 @@ package pl.poznan.put.bsr.bank.models;
 
 import org.bson.types.ObjectId;
 import org.mongodb.morphia.Datastore;
+import org.mongodb.morphia.annotations.Embedded;
 import org.mongodb.morphia.annotations.Entity;
 import org.mongodb.morphia.annotations.Id;
 import org.mongodb.morphia.annotations.Indexed;
@@ -30,9 +31,13 @@ public class BankAccount {
     private String accountNo;
     @NotNull
     private double balance;
+    @Embedded
     private List<BankOperation> history;
 
     public BankAccount() {
+        if(history == null) {
+            history = new ArrayList<>();
+        }
     }
 
     public BankAccount(String name) {
@@ -95,5 +100,13 @@ public class BankAccount {
 
     public List<BankOperation> getHistory() {
         return Collections.unmodifiableList(history);
+    }
+
+    public void setHistory(List<BankOperation> history) {
+        this.history = history;
+    }
+
+    public void addBankOperation(BankOperation bankOperation) {
+        history.add(bankOperation);
     }
 }
