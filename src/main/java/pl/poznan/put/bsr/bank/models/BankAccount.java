@@ -22,24 +22,46 @@ public class BankAccount {
     @Id
     private ObjectId id;
     @NotNull
+    private String name;
+    @NotNull
     @Indexed(name = "accountNo", unique = true)
     private String accountNo;
     @NotNull
-    private BigDecimal balance;
+    private double balance;
     private List<Operation> history;
 
     public BankAccount() {
+    }
+
+    public BankAccount(String name) {
+        this.name = name;
         accountNo = "48" + ConstantsUtil.BANK_ID + UUID.randomUUID().hashCode();
-        balance = new BigDecimal(0.0);
+        balance = 0.0;
         history = new ArrayList<>();
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getAccountNo() {
         return accountNo;
     }
 
-    public BigDecimal getBalance() {
+    public void setAccountNo(String accountNo) {
+        this.accountNo = accountNo;
+    }
+
+    public double getBalance() {
         return balance;
+    }
+
+    public void setBalance(double balance) {
+        this.balance = balance;
     }
 
     public List<Operation> getHistory() {
