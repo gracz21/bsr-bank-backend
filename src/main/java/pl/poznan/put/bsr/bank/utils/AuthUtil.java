@@ -12,7 +12,7 @@ import java.util.Map;
 /**
  * @author Kamil Walkowiak
  */
-public class AuthUtil {
+public abstract class AuthUtil {
     public static String getSessionIdFromHeaders(WebServiceContext context) throws BankServiceException {
         Map headers = (Map)context.getMessageContext().get(MessageContext.HTTP_REQUEST_HEADERS);
         ArrayList sessionId = (ArrayList)headers.get("Session-Id");
