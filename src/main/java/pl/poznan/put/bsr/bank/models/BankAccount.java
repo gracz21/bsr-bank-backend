@@ -15,7 +15,6 @@ import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.UUID;
 
 /**
  * @author Kamil Walkowiak
@@ -55,12 +54,13 @@ public class BankAccount {
 
         String accountNo = ConstantsUtil.BANK_ID + String.format("%016d", count);
 
-        String tmpNo = accountNo + "2521";
-        String part1 = tmpNo.substring(13);
-        String part2 = tmpNo.substring(13, tmpNo.length());
+        String tmpNo = accountNo + "252100";
+        String part1 = tmpNo.substring(0, 15);
+        String part2 = tmpNo.substring(15);
         long rest1 = Long.parseLong(part1)%97;
         long rest2 = Long.parseLong(rest1 + part2)%97;
         long checkSum = 98 - rest2;
+
         accountNo = String.format("%02d", checkSum) + accountNo;
         return accountNo;
     }
