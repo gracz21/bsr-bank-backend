@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.Base64;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @author Kamil Walkowiak
@@ -86,7 +87,19 @@ public class User {
         return Collections.unmodifiableList(bankAccounts);
     }
 
-    public void addAccount(BankAccount bankAccount) {
+    public void addBankAccount(BankAccount bankAccount) {
         bankAccounts.add(bankAccount);
+    }
+
+    public boolean containsBankAccount(String accountNo) {
+        return bankAccounts.stream().filter(bankAccount -> bankAccount.getAccountNo().equals(accountNo)).count() > 0;
+    }
+
+    public void removeBankAccount(String accountNo) {
+        BankAccount bankAccount = bankAccounts.stream()
+                .filter(account -> account.getAccountNo().equals(accountNo))
+                .collect(Collectors.toList())
+                .get(0);
+        bankAccounts.remove(bankAccount);
     }
 }

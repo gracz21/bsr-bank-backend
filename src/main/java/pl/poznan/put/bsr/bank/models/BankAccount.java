@@ -8,7 +8,6 @@ import pl.poznan.put.bsr.bank.models.operations.Operation;
 import pl.poznan.put.bsr.bank.utils.ConstantsUtil;
 
 import javax.validation.constraints.NotNull;
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -38,6 +37,14 @@ public class BankAccount {
         accountNo = "48" + ConstantsUtil.BANK_ID + UUID.randomUUID().hashCode();
         balance = 0.0;
         history = new ArrayList<>();
+    }
+
+    public ObjectId getId() {
+        return id;
+    }
+
+    public void setId(ObjectId id) {
+        this.id = id;
     }
 
     public String getName() {

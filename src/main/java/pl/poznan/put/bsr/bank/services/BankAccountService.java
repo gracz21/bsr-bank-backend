@@ -49,9 +49,35 @@ public class BankAccountService {
 
         if(user != null) {
             BankAccount bankAccount = new BankAccount(name);
-            user.addAccount(bankAccount);
+            user.addBankAccount(bankAccount);
             datastore.save(bankAccount);
             datastore.save(user);
+        } else {
+            datastore.delete(session);
+            throw new BankServiceException("User assigned to this session not exists");
+        }
+    }
+
+    @WebMethod
+    public void deleteBankAccount(@WebParam(name = "accountNo") @XmlElement(required=true) String accountNo)
+            throws BankServiceException {
+        Datastore datastore =  DataStoreHandlerUtil.getInstance().getDataStore();
+        String sessionId = AuthUtil.getSessionIdFromHeaders(context);
+        Session session = AuthUtil.getSessionObject(sessionId);
+        User user = session.getUser();
+
+        if(user != null) {
+            BankAccount bankAccount = datastore.find(BankAccount.class).field("accountNo").equal(accountNo).get();
+            if(bankAccount == null) {
+                throw new BankServiceException("Bank account with given no not exists");
+            }
+            if(user.containsBankAccount(bankAccount.getAccountNo())) {
+                user.removeBankAccount(bankAccount.getAccountNo());
+                datastore.delete(bankAccount);
+                datastore.save(user);
+            } else {
+                throw new BankServiceException("You do not own this bank account");
+            }
         } else {
             datastore.delete(session);
             throw new BankServiceException("User assigned to this session not exists");
