@@ -1,19 +1,29 @@
 package pl.poznan.put.bsr.bank.models.operations;
 
+import org.bson.types.ObjectId;
+import org.mongodb.morphia.annotations.Entity;
+import org.mongodb.morphia.annotations.Id;
 import pl.poznan.put.bsr.bank.models.BankAccount;
 
-import java.math.BigDecimal;
+import javax.validation.constraints.NotNull;
 
 /**
  * @author Kamil Walkowiak
  */
-public abstract class Operation {
+public abstract class BankOperation {
+    @NotNull
     private String title;
-    private BigDecimal amount;
-    private BigDecimal balanceAfter;
+    @NotNull
+    private double amount;
+    @NotNull
+    private double balanceAfter;
+    @NotNull
     private String targetAccountNo;
 
-    Operation(String title, BigDecimal amount, String targetAccountNo) {
+    public BankOperation() {
+    }
+
+    BankOperation(String title, double amount, String targetAccountNo) {
         this.title = title;
         this.amount = amount;
         this.targetAccountNo = targetAccountNo;
@@ -23,11 +33,11 @@ public abstract class Operation {
         return title;
     }
 
-    public BigDecimal getAmount() {
+    public double getAmount() {
         return amount;
     }
 
-    public BigDecimal getBalanceAfter() {
+    public double getBalanceAfter() {
         return balanceAfter;
     }
 

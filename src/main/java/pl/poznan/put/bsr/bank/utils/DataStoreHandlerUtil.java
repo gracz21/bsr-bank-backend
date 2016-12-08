@@ -3,6 +3,7 @@ package pl.poznan.put.bsr.bank.utils;
 import com.mongodb.MongoClient;
 import org.mongodb.morphia.Datastore;
 import org.mongodb.morphia.Morphia;
+import pl.poznan.put.bsr.bank.models.Counter;
 
 /**
  * @author Kamil Walkowiak
@@ -16,6 +17,10 @@ public class DataStoreHandlerUtil {
         dataStore = morphia.createDatastore(new MongoClient("localhost", 8004), "bank");
         morphia.mapPackage("pl.poznan.put.bsr.bank.models");
         dataStore.ensureIndexes();
+
+        if(dataStore.getCount(Counter.class) == 0) {
+            dataStore.save(new Counter("accountNoCounter"));
+        }
     }
 
     public static DataStoreHandlerUtil getInstance() {
