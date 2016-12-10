@@ -1,4 +1,4 @@
-package pl.poznan.put.bsr.bank.models.operations;
+package pl.poznan.put.bsr.bank.models.bankOperations;
 
 import pl.poznan.put.bsr.bank.services.exceptions.BankOperationException;
 

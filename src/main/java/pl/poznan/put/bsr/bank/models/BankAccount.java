@@ -8,7 +8,7 @@ import org.mongodb.morphia.annotations.Id;
 import org.mongodb.morphia.annotations.Indexed;
 import org.mongodb.morphia.query.Query;
 import org.mongodb.morphia.query.UpdateOperations;
-import pl.poznan.put.bsr.bank.models.operations.BankOperation;
+import pl.poznan.put.bsr.bank.models.bankOperations.BankOperation;
 import pl.poznan.put.bsr.bank.utils.ConstantsUtil;
 import pl.poznan.put.bsr.bank.utils.DataStoreHandlerUtil;
 

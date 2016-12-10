@@ -1,4 +1,4 @@
-package pl.poznan.put.bsr.bank.models.operations;
+package pl.poznan.put.bsr.bank.models.bankOperations;
 
 import org.bson.types.ObjectId;
 import org.mongodb.morphia.annotations.Embedded;

@@ -1,11 +1,8 @@
 package pl.poznan.put.bsr.bank.services;
 
-import org.mongodb.morphia.Datastore;
-import pl.poznan.put.bsr.bank.models.BankAccount;
-import pl.poznan.put.bsr.bank.models.operations.Payment;
+import pl.poznan.put.bsr.bank.models.bankOperations.Payment;
 import pl.poznan.put.bsr.bank.services.exceptions.BankOperationException;
 import pl.poznan.put.bsr.bank.services.exceptions.BankServiceException;
-import pl.poznan.put.bsr.bank.utils.DataStoreHandlerUtil;
 
 import javax.jws.WebMethod;
 import javax.jws.WebParam;
