@@ -1,6 +1,7 @@
 package pl.poznan.put.bsr.bank.models.bankOperations;
 
 import org.bson.types.ObjectId;
+import org.mongodb.morphia.Datastore;
 import org.mongodb.morphia.annotations.Embedded;
 import org.mongodb.morphia.annotations.Id;
 import pl.poznan.put.bsr.bank.exceptions.BankOperationException;
@@ -82,9 +83,17 @@ public abstract class BankOperation {
         this.executed = executed;
     }
 
-    public void doOperation() throws BankOperationException {
+    public void doOperation(Datastore datastore) throws BankOperationException {
         if(executed) {
             throw new BankOperationException("Operation has been already executed");
         }
+        if(amount < 0) {
+            throw new BankOperationException("Negative amount");
+        }
+
+        execute(datastore);
+        executed = true;
     }
+
+    protected abstract void execute(Datastore datastore) throws BankOperationException;
 }

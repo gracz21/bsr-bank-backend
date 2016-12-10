@@ -17,19 +17,12 @@ public class Payment extends BankOperation {
     }
 
     @Override
-    public void doOperation() throws BankOperationException {
-        super.doOperation();
-        if(amount < 0) {
-            throw new BankOperationException("Negative amount");
-        }
-
-        Datastore datastore = DataStoreHandlerUtil.getInstance().getDataStore();
+    protected void execute(Datastore datastore) throws BankOperationException {
         BankAccount bankAccount = datastore.find(BankAccount.class).field("accountNo").equal(targetAccountNo).get();
         if(bankAccount == null) {
             throw new BankOperationException("Target bank account does not exist");
         }
 
         bankAccount.setBalance(bankAccount.getBalance() + amount);
-        executed = true;
     }
 }
