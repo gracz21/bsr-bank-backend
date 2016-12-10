@@ -1,6 +1,7 @@
 package pl.poznan.put.bsr.bank.services;
 
 import com.mongodb.DuplicateKeyException;
+import com.sun.xml.ws.developer.SchemaValidation;
 import org.mongodb.morphia.Datastore;
 import pl.poznan.put.bsr.bank.exceptions.AuthException;
 import pl.poznan.put.bsr.bank.models.Session;
@@ -23,6 +24,7 @@ import java.util.UUID;
  * @author Kamil Walkowiak
  */
 @WebService
+@SchemaValidation
 public class UserService {
     @Resource
     private WebServiceContext context;

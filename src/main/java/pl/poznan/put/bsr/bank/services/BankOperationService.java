@@ -1,5 +1,6 @@
 package pl.poznan.put.bsr.bank.services;
 
+import com.sun.xml.ws.developer.SchemaValidation;
 import pl.poznan.put.bsr.bank.models.bankOperations.Payment;
 import pl.poznan.put.bsr.bank.exceptions.BankOperationException;
 import pl.poznan.put.bsr.bank.exceptions.BankServiceException;
@@ -13,6 +14,7 @@ import javax.xml.bind.annotation.XmlElement;
  * @author Kamil Walkowiak
  */
 @WebService
+@SchemaValidation
 public class BankOperationService {
     @WebMethod
     public void makePayment(@WebParam(name = "title") @XmlElement(required = true) String title,

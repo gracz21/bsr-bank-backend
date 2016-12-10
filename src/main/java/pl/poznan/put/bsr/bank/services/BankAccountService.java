@@ -1,5 +1,6 @@
 package pl.poznan.put.bsr.bank.services;
 
+import com.sun.xml.ws.developer.SchemaValidation;
 import org.mongodb.morphia.Datastore;
 import pl.poznan.put.bsr.bank.exceptions.AuthException;
 import pl.poznan.put.bsr.bank.models.BankAccount;
@@ -21,6 +22,7 @@ import java.util.List;
  * @author Kamil Walkowiak
  */
 @WebService
+@SchemaValidation
 public class BankAccountService {
     @Resource
     private WebServiceContext context;
