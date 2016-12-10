@@ -3,12 +3,15 @@ package pl.poznan.put.bsr.bank.services;
 import com.sun.xml.ws.developer.SchemaValidation;
 import org.mongodb.morphia.Datastore;
 import pl.poznan.put.bsr.bank.exceptions.AuthException;
+import pl.poznan.put.bsr.bank.exceptions.ValidationException;
+import pl.poznan.put.bsr.bank.handlers.SchemaValidationHandler;
 import pl.poznan.put.bsr.bank.models.BankAccount;
 import pl.poznan.put.bsr.bank.models.Session;
 import pl.poznan.put.bsr.bank.models.User;
 import pl.poznan.put.bsr.bank.exceptions.BankServiceException;
 import pl.poznan.put.bsr.bank.utils.AuthUtil;
 import pl.poznan.put.bsr.bank.utils.DataStoreHandlerUtil;
+import pl.poznan.put.bsr.bank.utils.SAXExceptionToValidationExceptionUtil;
 
 import javax.annotation.Resource;
 import javax.jws.WebMethod;
@@ -22,7 +25,7 @@ import java.util.List;
  * @author Kamil Walkowiak
  */
 @WebService
-@SchemaValidation
+@SchemaValidation(handler = SchemaValidationHandler.class)
 public class BankAccountService {
     @Resource
     private WebServiceContext context;
@@ -44,7 +47,9 @@ public class BankAccountService {
 
     @WebMethod
     public void addBankAccount(@WebParam(name = "name") @XmlElement(required = true) String name)
-            throws BankServiceException, AuthException {
+            throws BankServiceException, AuthException, ValidationException {
+        SAXExceptionToValidationExceptionUtil.parseExceptions(context.getMessageContext());
+
         Datastore datastore =  DataStoreHandlerUtil.getInstance().getDataStore();
         String sessionId = AuthUtil.getSessionIdFromHeaders(context);
         Session session = AuthUtil.getSessionObject(sessionId);
@@ -63,7 +68,9 @@ public class BankAccountService {
 
     @WebMethod
     public void deleteBankAccount(@WebParam(name = "accountNo") @XmlElement(required = true) String accountNo)
-            throws BankServiceException, AuthException {
+            throws BankServiceException, AuthException, ValidationException {
+        SAXExceptionToValidationExceptionUtil.parseExceptions(context.getMessageContext());
+
         Datastore datastore =  DataStoreHandlerUtil.getInstance().getDataStore();
         String sessionId = AuthUtil.getSessionIdFromHeaders(context);
         Session session = AuthUtil.getSessionObject(sessionId);

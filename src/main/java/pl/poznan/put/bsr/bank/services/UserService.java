@@ -4,11 +4,14 @@ import com.mongodb.DuplicateKeyException;
 import com.sun.xml.ws.developer.SchemaValidation;
 import org.mongodb.morphia.Datastore;
 import pl.poznan.put.bsr.bank.exceptions.AuthException;
+import pl.poznan.put.bsr.bank.exceptions.ValidationException;
+import pl.poznan.put.bsr.bank.handlers.SchemaValidationHandler;
 import pl.poznan.put.bsr.bank.models.Session;
 import pl.poznan.put.bsr.bank.models.User;
 import pl.poznan.put.bsr.bank.exceptions.BankServiceException;
 import pl.poznan.put.bsr.bank.utils.AuthUtil;
 import pl.poznan.put.bsr.bank.utils.DataStoreHandlerUtil;
+import pl.poznan.put.bsr.bank.utils.SAXExceptionToValidationExceptionUtil;
 
 import javax.annotation.Resource;
 import javax.jws.WebMethod;
@@ -24,7 +27,7 @@ import java.util.UUID;
  * @author Kamil Walkowiak
  */
 @WebService
-@SchemaValidation
+@SchemaValidation(handler = SchemaValidationHandler.class)
 public class UserService {
     @Resource
     private WebServiceContext context;
@@ -34,7 +37,9 @@ public class UserService {
                          @WebParam(name = "password") @XmlElement(required = true) String password,
                          @WebParam(name = "firstName") @XmlElement(required = true) String firstName,
                          @WebParam(name = "lastName") @XmlElement(required = true) String lastName)
-            throws BankServiceException {
+            throws BankServiceException, ValidationException {
+        SAXExceptionToValidationExceptionUtil.parseExceptions(context.getMessageContext());
+
         Datastore datastore =  DataStoreHandlerUtil.getInstance().getDataStore();
         try {
             datastore.save(new User(userName, password, firstName, lastName));
@@ -46,7 +51,9 @@ public class UserService {
     @WebMethod
     public String login(@WebParam(name = "userName") @XmlElement(required = true) String userName,
                       @WebParam(name = "password") @XmlElement(required = true) String password)
-            throws BankServiceException {
+            throws BankServiceException, ValidationException {
+        SAXExceptionToValidationExceptionUtil.parseExceptions(context.getMessageContext());
+
         Datastore datastore =  DataStoreHandlerUtil.getInstance().getDataStore();
         User user = datastore.find(User.class).field("userName").equal(userName).get();
         if(user == null) {
