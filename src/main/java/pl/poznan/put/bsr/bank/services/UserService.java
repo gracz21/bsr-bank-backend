@@ -2,6 +2,7 @@ package pl.poznan.put.bsr.bank.services;
 
 import com.mongodb.DuplicateKeyException;
 import org.mongodb.morphia.Datastore;
+import pl.poznan.put.bsr.bank.exceptions.AuthException;
 import pl.poznan.put.bsr.bank.models.Session;
 import pl.poznan.put.bsr.bank.models.User;
 import pl.poznan.put.bsr.bank.exceptions.BankServiceException;
@@ -27,10 +28,10 @@ public class UserService {
     private WebServiceContext context;
 
     @WebMethod
-    public void register(@WebParam(name = "userName") @XmlElement(required=true) String userName,
-                         @WebParam(name = "password") @XmlElement(required=true) String password,
-                         @WebParam(name = "firstName") @XmlElement(required=true) String firstName,
-                         @WebParam(name = "lastName") @XmlElement(required=true) String lastName)
+    public void register(@WebParam(name = "userName") @XmlElement(required = true) String userName,
+                         @WebParam(name = "password") @XmlElement(required = true) String password,
+                         @WebParam(name = "firstName") @XmlElement(required = true) String firstName,
+                         @WebParam(name = "lastName") @XmlElement(required = true) String lastName)
             throws BankServiceException {
         Datastore datastore =  DataStoreHandlerUtil.getInstance().getDataStore();
         try {
@@ -41,8 +42,8 @@ public class UserService {
     }
 
     @WebMethod
-    public String login(@WebParam(name = "userName") @XmlElement(required=true) String userName,
-                      @WebParam(name = "password") @XmlElement(required=true) String password)
+    public String login(@WebParam(name = "userName") @XmlElement(required = true) String userName,
+                      @WebParam(name = "password") @XmlElement(required = true) String password)
             throws BankServiceException {
         Datastore datastore =  DataStoreHandlerUtil.getInstance().getDataStore();
         User user = datastore.find(User.class).field("userName").equal(userName).get();
@@ -58,7 +59,7 @@ public class UserService {
     }
 
     @WebMethod
-    public void logout() throws BankServiceException {
+    public void logout() throws AuthException {
         String sessionId = AuthUtil.getSessionIdFromHeaders(context);
         Datastore datastore =  DataStoreHandlerUtil.getInstance().getDataStore();
         Session session = AuthUtil.getSessionObject(sessionId);
@@ -66,7 +67,7 @@ public class UserService {
     }
 
     @WebMethod
-    public void deleteCurrentUser() throws BankServiceException {
+    public void deleteCurrentUser() throws BankServiceException, AuthException {
         String sessionId = AuthUtil.getSessionIdFromHeaders(context);
         Datastore datastore =  DataStoreHandlerUtil.getInstance().getDataStore();
         Session session = AuthUtil.getSessionObject(sessionId);

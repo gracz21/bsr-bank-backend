@@ -1,6 +1,7 @@
 package pl.poznan.put.bsr.bank.services;
 
 import org.mongodb.morphia.Datastore;
+import pl.poznan.put.bsr.bank.exceptions.AuthException;
 import pl.poznan.put.bsr.bank.models.BankAccount;
 import pl.poznan.put.bsr.bank.models.Session;
 import pl.poznan.put.bsr.bank.models.User;
@@ -25,7 +26,7 @@ public class BankAccountService {
     private WebServiceContext context;
 
     @WebMethod
-    public List<BankAccount> getCurrentUserBankAccounts() throws BankServiceException {
+    public List<BankAccount> getCurrentUserBankAccounts() throws BankServiceException, AuthException {
         Datastore datastore =  DataStoreHandlerUtil.getInstance().getDataStore();
         String sessionId = AuthUtil.getSessionIdFromHeaders(context);
         Session session = AuthUtil.getSessionObject(sessionId);
@@ -40,8 +41,8 @@ public class BankAccountService {
     }
 
     @WebMethod
-    public void addBankAccount(@WebParam(name = "name") @XmlElement(required=true) String name)
-            throws BankServiceException {
+    public void addBankAccount(@WebParam(name = "name") @XmlElement(required = true) String name)
+            throws BankServiceException, AuthException {
         Datastore datastore =  DataStoreHandlerUtil.getInstance().getDataStore();
         String sessionId = AuthUtil.getSessionIdFromHeaders(context);
         Session session = AuthUtil.getSessionObject(sessionId);
@@ -59,8 +60,8 @@ public class BankAccountService {
     }
 
     @WebMethod
-    public void deleteBankAccount(@WebParam(name = "accountNo") @XmlElement(required=true) String accountNo)
-            throws BankServiceException {
+    public void deleteBankAccount(@WebParam(name = "accountNo") @XmlElement(required = true) String accountNo)
+            throws BankServiceException, AuthException {
         Datastore datastore =  DataStoreHandlerUtil.getInstance().getDataStore();
         String sessionId = AuthUtil.getSessionIdFromHeaders(context);
         Session session = AuthUtil.getSessionObject(sessionId);
