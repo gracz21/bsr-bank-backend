@@ -1,6 +1,8 @@
 package pl.poznan.put.bsr.bank.models.bankOperations;
 
+import org.mongodb.morphia.Datastore;
 import pl.poznan.put.bsr.bank.exceptions.BankOperationException;
+import pl.poznan.put.bsr.bank.models.BankAccount;
 
 import javax.validation.constraints.NotNull;
 
@@ -28,7 +30,20 @@ public class InternalTransfer extends BankOperation {
     }
 
     @Override
-    public void doOperation() throws BankOperationException {
-        super.doOperation();
+    protected void execute(Datastore datastore) throws BankOperationException {
+        BankAccount sourceBankAccount = datastore.find(BankAccount.class)
+                .field("accountNo").equal(sourceAccountNo).get();
+        BankAccount targetBankAccount = datastore.find(BankAccount.class)
+                .field("accountNo").equal(targetAccountNo).get();
+
+        if(sourceBankAccount == null) {
+            throw new BankOperationException("Source bank account does not exist");
+        }
+        if(targetBankAccount == null) {
+            throw new BankOperationException("Target bank account does not exist");
+        }
+
+        sourceBankAccount.setBalance(sourceBankAccount.getBalance() - amount);
+        targetBankAccount.setBalance(targetBankAccount.getBalance() + amount);
     }
 }
