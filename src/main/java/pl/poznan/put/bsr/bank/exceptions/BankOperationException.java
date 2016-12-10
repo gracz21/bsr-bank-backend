@@ -1,4 +1,4 @@
-package pl.poznan.put.bsr.bank.services.exceptions;
+package pl.poznan.put.bsr.bank.exceptions;
 
 /**
  * @author Kamil Walkowiak

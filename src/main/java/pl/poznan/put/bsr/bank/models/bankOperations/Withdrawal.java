@@ -1,6 +1,6 @@
 package pl.poznan.put.bsr.bank.models.bankOperations;
 
-import pl.poznan.put.bsr.bank.services.exceptions.BankOperationException;
+import pl.poznan.put.bsr.bank.exceptions.BankOperationException;
 
 /**
  * @author Kamil Walkowiak

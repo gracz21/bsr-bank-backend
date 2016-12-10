@@ -3,7 +3,7 @@ package pl.poznan.put.bsr.bank.models.bankOperations;
 import org.bson.types.ObjectId;
 import org.mongodb.morphia.annotations.Embedded;
 import org.mongodb.morphia.annotations.Id;
-import pl.poznan.put.bsr.bank.services.exceptions.BankOperationException;
+import pl.poznan.put.bsr.bank.exceptions.BankOperationException;
 import javax.validation.constraints.NotNull;
 
 /**

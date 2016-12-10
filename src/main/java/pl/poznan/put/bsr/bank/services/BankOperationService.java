@@ -1,8 +1,8 @@
 package pl.poznan.put.bsr.bank.services;
 
 import pl.poznan.put.bsr.bank.models.bankOperations.Payment;
-import pl.poznan.put.bsr.bank.services.exceptions.BankOperationException;
-import pl.poznan.put.bsr.bank.services.exceptions.BankServiceException;
+import pl.poznan.put.bsr.bank.exceptions.BankOperationException;
+import pl.poznan.put.bsr.bank.exceptions.BankServiceException;
 
 import javax.jws.WebMethod;
 import javax.jws.WebParam;

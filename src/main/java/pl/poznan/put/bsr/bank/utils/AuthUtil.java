@@ -2,7 +2,7 @@ package pl.poznan.put.bsr.bank.utils;
 
 import org.mongodb.morphia.Datastore;
 import pl.poznan.put.bsr.bank.models.Session;
-import pl.poznan.put.bsr.bank.services.exceptions.BankServiceException;
+import pl.poznan.put.bsr.bank.exceptions.BankServiceException;
 
 import javax.xml.ws.WebServiceContext;
 import javax.xml.ws.handler.MessageContext;
