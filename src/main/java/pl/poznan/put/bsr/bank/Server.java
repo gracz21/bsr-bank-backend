@@ -8,6 +8,7 @@ import org.glassfish.jersey.server.ResourceConfig;
 import pl.poznan.put.bsr.bank.services.BankAccountService;
 import pl.poznan.put.bsr.bank.services.BankOperationService;
 import pl.poznan.put.bsr.bank.services.UserService;
+import pl.poznan.put.bsr.bank.utils.ConstantsUtil;
 import pl.poznan.put.bsr.bank.utils.DataStoreHandlerUtil;
 
 import javax.ws.rs.core.UriBuilder;
@@ -29,13 +30,13 @@ public class Server {
     }
 
     private static void initializeRESTServer() {
-        URI baseUri = UriBuilder.fromUri("http://localhost/").port(8000).build();
+        URI baseUri = UriBuilder.fromUri("http://localhost/").port(ConstantsUtil.REST_PORT).build();
         ResourceConfig config = new ResourceConfig().packages("rest");
         server = GrizzlyHttpServerFactory.createHttpServer(baseUri, config, false);
     }
 
     private static void initializeSOAPServer() {
-        NetworkListener networkListener = new NetworkListener("jaxws-listener", "0.0.0.0", 8080);
+        NetworkListener networkListener = new NetworkListener("jaxws-listener", "0.0.0.0", ConstantsUtil.SOAP_PORT);
         server.getServerConfiguration().addHttpHandler(new JaxwsHandler(new UserService()), "/users");
         server.getServerConfiguration().addHttpHandler(new JaxwsHandler(new BankAccountService()), "/bankAccounts");
         server.getServerConfiguration().addHttpHandler(new JaxwsHandler(new BankOperationService()), "/bankOperations");
