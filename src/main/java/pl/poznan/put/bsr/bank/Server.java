@@ -10,10 +10,12 @@ import pl.poznan.put.bsr.bank.services.BankOperationService;
 import pl.poznan.put.bsr.bank.services.UserService;
 import pl.poznan.put.bsr.bank.utils.ConstantsUtil;
 import pl.poznan.put.bsr.bank.utils.DataStoreHandlerUtil;
+import pl.poznan.put.bsr.bank.utils.MapBankToIpUtil;
 
 import javax.ws.rs.core.UriBuilder;
 import java.io.IOException;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.SimpleTimeZone;
 
 /**
@@ -22,14 +24,15 @@ import java.util.SimpleTimeZone;
 public class Server {
     private static HttpServer server;
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) throws IOException, URISyntaxException {
         DataStoreHandlerUtil.getInstance().initializeDataStore();
         initializeRESTServer();
         initializeSOAPServer();
         server.start();
     }
 
-    private static void initializeRESTServer() {
+    private static void initializeRESTServer() throws IOException, URISyntaxException {
+        MapBankToIpUtil.getInstance().initialize();
         URI baseUri = UriBuilder.fromUri("http://localhost/").port(ConstantsUtil.REST_PORT).build();
         ResourceConfig config = new ResourceConfig().packages("rest");
         server = GrizzlyHttpServerFactory.createHttpServer(baseUri, config, false);
