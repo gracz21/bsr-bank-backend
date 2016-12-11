@@ -22,7 +22,7 @@ public class Transfer extends BankOperation {
     public Transfer() {
     }
 
-    Transfer(String title, double amount, String sourceAccountNo, String targetAccountNo, TransferDirection direction) {
+    public Transfer(String title, double amount, String sourceAccountNo, String targetAccountNo, TransferDirection direction) {
         super(title, amount, targetAccountNo);
         this.sourceAccountNo = sourceAccountNo;
         this.direction = direction;
@@ -49,6 +49,10 @@ public class Transfer extends BankOperation {
         if(direction == TransferDirection.IN) {
             bankAccount.setBalance(bankAccount.getBalance() + amount);
         } else {
+            if(amount > bankAccount.getBalance()) {
+                throw new BankOperationException("Amount bigger than current account balance");
+            }
+
             bankAccount.setBalance(bankAccount.getBalance() - amount);
         }
         this.balanceAfter = bankAccount.getBalance();

@@ -10,6 +10,7 @@ import pl.poznan.put.bsr.bank.handlers.SchemaValidationHandler;
 import pl.poznan.put.bsr.bank.models.BankAccount;
 import pl.poznan.put.bsr.bank.models.User;
 import pl.poznan.put.bsr.bank.models.bankOperations.Payment;
+import pl.poznan.put.bsr.bank.models.bankOperations.Transfer;
 import pl.poznan.put.bsr.bank.models.bankOperations.Withdrawal;
 import pl.poznan.put.bsr.bank.utils.AuthUtil;
 import pl.poznan.put.bsr.bank.utils.ConstantsUtil;
@@ -49,6 +50,7 @@ public class BankOperationService {
 
         Payment payment = new Payment(title, amount, targetAccountNo);
         payment.doOperation(bankAccount);
+        datastore.save(bankAccount);
     }
 
     @WebMethod
@@ -66,11 +68,11 @@ public class BankOperationService {
             throw new BankServiceException("Target bank account does not exist");
         }
 
-        if(user.containsBankAccount(targetAccountNo)) {
-            Withdrawal withdrawal = new Withdrawal(title, amount, targetAccountNo);
-            withdrawal.doOperation(bankAccount);
-        } else {
+        if(!user.containsBankAccount(targetAccountNo)) {
             throw new BankServiceException("Target account does not belong to user");
         }
+        Withdrawal withdrawal = new Withdrawal(title, amount, targetAccountNo);
+        withdrawal.doOperation(bankAccount);
+        datastore.save(bankAccount);
     }
 }
