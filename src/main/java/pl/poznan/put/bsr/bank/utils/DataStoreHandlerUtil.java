@@ -14,7 +14,7 @@ public class DataStoreHandlerUtil {
 
     public void initializeDataStore() {
         final Morphia morphia = new Morphia();
-        dataStore = morphia.createDatastore(new MongoClient("localhost", 8004), "bank");
+        dataStore = morphia.createDatastore(new MongoClient("localhost", ConstantsUtil.MONGODB_PORT), "bank");
         morphia.mapPackage("pl.poznan.put.bsr.bank.models");
         dataStore.ensureIndexes();
 
