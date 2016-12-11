@@ -93,6 +93,7 @@ public abstract class BankOperation {
 
         execute(datastore);
         executed = true;
+        datastore.save(this);
     }
 
     protected abstract void execute(Datastore datastore) throws BankOperationException;

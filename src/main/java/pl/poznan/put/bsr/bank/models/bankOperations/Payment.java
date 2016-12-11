@@ -24,5 +24,8 @@ public class Payment extends BankOperation {
         }
 
         bankAccount.setBalance(bankAccount.getBalance() + amount);
+        this.balanceAfter = bankAccount.getBalance();
+        bankAccount.addBankOperation(this);
+        datastore.save(bankAccount);
     }
 }

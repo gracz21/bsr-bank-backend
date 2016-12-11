@@ -1,11 +1,13 @@
 package pl.poznan.put.bsr.bank.services;
 
 import com.sun.xml.ws.developer.SchemaValidation;
+import org.mongodb.morphia.Datastore;
 import pl.poznan.put.bsr.bank.exceptions.ValidationException;
 import pl.poznan.put.bsr.bank.handlers.SchemaValidationHandler;
 import pl.poznan.put.bsr.bank.models.bankOperations.Payment;
 import pl.poznan.put.bsr.bank.exceptions.BankOperationException;
 import pl.poznan.put.bsr.bank.exceptions.BankServiceException;
+import pl.poznan.put.bsr.bank.utils.DataStoreHandlerUtil;
 import pl.poznan.put.bsr.bank.utils.SAXExceptionToValidationExceptionUtil;
 
 import javax.annotation.Resource;
@@ -31,7 +33,8 @@ public class BankOperationService {
             throws BankServiceException, BankOperationException, ValidationException {
         SAXExceptionToValidationExceptionUtil.parseExceptions(context.getMessageContext());
 
+        Datastore datastore = DataStoreHandlerUtil.getInstance().getDataStore();
         Payment payment = new Payment(title, amount, targetAccountNo);
-        payment.doOperation();
+        payment.doOperation(datastore);
     }
 }
