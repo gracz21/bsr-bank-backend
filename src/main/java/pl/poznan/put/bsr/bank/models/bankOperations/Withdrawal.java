@@ -21,7 +21,13 @@ public class Withdrawal extends BankOperation {
         if(bankAccount == null) {
             throw new BankOperationException("Target bank account does not exist");
         }
+        if(amount > bankAccount.getBalance()) {
+            throw new BankOperationException("Amount bigger than current account balance");
+        }
 
         bankAccount.setBalance(bankAccount.getBalance() - amount);
+        this.balanceAfter = bankAccount.getBalance();
+        bankAccount.addBankOperation(this);
+        datastore.save(bankAccount);
     }
 }
