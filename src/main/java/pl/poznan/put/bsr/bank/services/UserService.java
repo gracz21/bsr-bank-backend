@@ -4,11 +4,11 @@ import com.mongodb.DuplicateKeyException;
 import com.sun.xml.ws.developer.SchemaValidation;
 import org.mongodb.morphia.Datastore;
 import pl.poznan.put.bsr.bank.exceptions.AuthException;
+import pl.poznan.put.bsr.bank.exceptions.BankServiceException;
 import pl.poznan.put.bsr.bank.exceptions.ValidationException;
 import pl.poznan.put.bsr.bank.handlers.SchemaValidationHandler;
 import pl.poznan.put.bsr.bank.models.Session;
 import pl.poznan.put.bsr.bank.models.User;
-import pl.poznan.put.bsr.bank.exceptions.BankServiceException;
 import pl.poznan.put.bsr.bank.utils.AuthUtil;
 import pl.poznan.put.bsr.bank.utils.DataStoreHandlerUtil;
 import pl.poznan.put.bsr.bank.utils.SAXExceptionToValidationExceptionUtil;
@@ -69,17 +69,16 @@ public class UserService {
 
     @WebMethod
     public void logout() throws AuthException {
-        String sessionId = AuthUtil.getSessionIdFromHeaders(context);
+        String sessionId = AuthUtil.getSessionIdFromWebServiceContext(context);
         Datastore datastore =  DataStoreHandlerUtil.getInstance().getDataStore();
-        Session session = AuthUtil.getSessionObject(sessionId);
+        Session session = AuthUtil.getSessionFromWebServiceContext(context, datastore);
         datastore.delete(session);
     }
 
     @WebMethod
     public void deleteCurrentUser() throws BankServiceException, AuthException {
-        String sessionId = AuthUtil.getSessionIdFromHeaders(context);
         Datastore datastore =  DataStoreHandlerUtil.getInstance().getDataStore();
-        Session session = AuthUtil.getSessionObject(sessionId);
+        Session session = AuthUtil.getSessionFromWebServiceContext(context, datastore);
         User user = session.getUser();
 
         datastore.delete(session);
