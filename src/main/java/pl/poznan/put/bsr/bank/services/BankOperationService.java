@@ -7,10 +7,12 @@ import pl.poznan.put.bsr.bank.exceptions.BankOperationException;
 import pl.poznan.put.bsr.bank.exceptions.BankServiceException;
 import pl.poznan.put.bsr.bank.exceptions.ValidationException;
 import pl.poznan.put.bsr.bank.handlers.SchemaValidationHandler;
+import pl.poznan.put.bsr.bank.models.BankAccount;
 import pl.poznan.put.bsr.bank.models.User;
 import pl.poznan.put.bsr.bank.models.bankOperations.Payment;
 import pl.poznan.put.bsr.bank.models.bankOperations.Withdrawal;
 import pl.poznan.put.bsr.bank.utils.AuthUtil;
+import pl.poznan.put.bsr.bank.utils.ConstantsUtil;
 import pl.poznan.put.bsr.bank.utils.DataStoreHandlerUtil;
 import pl.poznan.put.bsr.bank.utils.SAXExceptionToValidationExceptionUtil;
 
@@ -40,8 +42,13 @@ public class BankOperationService {
         Datastore datastore = DataStoreHandlerUtil.getInstance().getDataStore();
         AuthUtil.getUserFromWebServiceContext(context, datastore);
 
+        BankAccount bankAccount = datastore.find(BankAccount.class).field("accountNo").equal(targetAccountNo).get();
+        if(bankAccount == null) {
+            throw new BankServiceException("Target bank account does not exist");
+        }
+
         Payment payment = new Payment(title, amount, targetAccountNo);
-        payment.doOperation(datastore);
+        payment.doOperation(bankAccount);
     }
 
     @WebMethod
@@ -54,11 +61,16 @@ public class BankOperationService {
         Datastore datastore = DataStoreHandlerUtil.getInstance().getDataStore();
         User user = AuthUtil.getUserFromWebServiceContext(context, datastore);
 
+        BankAccount bankAccount = datastore.find(BankAccount.class).field("accountNo").equal(targetAccountNo).get();
+        if(bankAccount == null) {
+            throw new BankServiceException("Target bank account does not exist");
+        }
+
         if(user.containsBankAccount(targetAccountNo)) {
             Withdrawal withdrawal = new Withdrawal(title, amount, targetAccountNo);
-            withdrawal.doOperation(datastore);
+            withdrawal.doOperation(bankAccount);
         } else {
-            throw new BankServiceException("Target account does not belong to user or does not exist");
+            throw new BankServiceException("Target account does not belong to user");
         }
     }
 }

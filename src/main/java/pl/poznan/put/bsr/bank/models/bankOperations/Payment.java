@@ -17,15 +17,9 @@ public class Payment extends BankOperation {
     }
 
     @Override
-    protected void execute(Datastore datastore) throws BankOperationException {
-        BankAccount bankAccount = datastore.find(BankAccount.class).field("accountNo").equal(targetAccountNo).get();
-        if(bankAccount == null) {
-            throw new BankOperationException("Target bank account does not exist");
-        }
-
+    protected void execute(BankAccount bankAccount) throws BankOperationException {
         bankAccount.setBalance(bankAccount.getBalance() + amount);
         this.balanceAfter = bankAccount.getBalance();
         bankAccount.addBankOperation(this);
-        datastore.save(bankAccount);
     }
 }

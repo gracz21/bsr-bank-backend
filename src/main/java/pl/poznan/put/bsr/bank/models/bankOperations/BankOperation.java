@@ -5,6 +5,8 @@ import org.mongodb.morphia.Datastore;
 import org.mongodb.morphia.annotations.Embedded;
 import org.mongodb.morphia.annotations.Id;
 import pl.poznan.put.bsr.bank.exceptions.BankOperationException;
+import pl.poznan.put.bsr.bank.models.BankAccount;
+
 import javax.validation.constraints.NotNull;
 
 /**
@@ -83,7 +85,7 @@ public abstract class BankOperation {
         this.executed = executed;
     }
 
-    public void doOperation(Datastore datastore) throws BankOperationException {
+    public void doOperation(BankAccount bankAccount) throws BankOperationException {
         if(executed) {
             throw new BankOperationException("Operation has been already executed");
         }
@@ -91,10 +93,9 @@ public abstract class BankOperation {
             throw new BankOperationException("Negative amount");
         }
 
-        execute(datastore);
+        execute(bankAccount);
         executed = true;
-        datastore.save(this);
     }
 
-    protected abstract void execute(Datastore datastore) throws BankOperationException;
+    protected abstract void execute(BankAccount bankAccount) throws BankOperationException;
 }

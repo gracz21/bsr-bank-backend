@@ -16,11 +16,7 @@ public class Withdrawal extends BankOperation {
     }
 
     @Override
-    protected void execute(Datastore datastore) throws BankOperationException {
-        BankAccount bankAccount = datastore.find(BankAccount.class).field("accountNo").equal(targetAccountNo).get();
-        if(bankAccount == null) {
-            throw new BankOperationException("Target bank account does not exist");
-        }
+    protected void execute(BankAccount bankAccount) throws BankOperationException {
         if(amount > bankAccount.getBalance()) {
             throw new BankOperationException("Amount bigger than current account balance");
         }
@@ -28,6 +24,5 @@ public class Withdrawal extends BankOperation {
         bankAccount.setBalance(bankAccount.getBalance() - amount);
         this.balanceAfter = bankAccount.getBalance();
         bankAccount.addBankOperation(this);
-        datastore.save(bankAccount);
     }
 }
