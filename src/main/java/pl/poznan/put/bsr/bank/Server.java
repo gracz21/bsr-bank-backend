@@ -36,7 +36,6 @@ public class Server {
     private static void initializeRESTServer() throws IOException, URISyntaxException {
         MapBankToIpUtil.getInstance().initialize();
         URI baseUri = UriBuilder.fromUri("http://localhost/").port(ConstantsUtil.REST_PORT).build();
-        HttpAuthenticationFeature feature = HttpAuthenticationFeature.basic("user", "superSecretPassword");
         ResourceConfig config = new ResourceConfig().packages("pl.poznan.put.bsr.bank.resources");
         config.register(BasicAuthFilterUtil.class);
         server = GrizzlyHttpServerFactory.createHttpServer(baseUri, config, false);
