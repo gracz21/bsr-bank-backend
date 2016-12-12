@@ -20,7 +20,7 @@ public class BasicAuthFilterUtil implements ContainerRequestFilter {
             throw new WebApplicationException(Response.Status.UNAUTHORIZED);
         }
 
-        String[] credentials = Base64.decodeAsString(auth).split(":");
+        String[] credentials = Base64.decodeAsString(auth.substring(6)).split(":");
         if(credentials.length < 2 || !credentials[1].equals(ConstantsUtil.BANK_PASSWORD)) {
             throw new WebApplicationException(Response.Status.UNAUTHORIZED);
         }
