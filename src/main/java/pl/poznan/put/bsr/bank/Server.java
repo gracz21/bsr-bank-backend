@@ -3,11 +3,13 @@ package pl.poznan.put.bsr.bank;
 import org.glassfish.grizzly.http.server.HttpServer;
 import org.glassfish.grizzly.http.server.NetworkListener;
 import org.glassfish.grizzly.jaxws.JaxwsHandler;
+import org.glassfish.jersey.client.authentication.HttpAuthenticationFeature;
 import org.glassfish.jersey.grizzly2.httpserver.GrizzlyHttpServerFactory;
 import org.glassfish.jersey.server.ResourceConfig;
 import pl.poznan.put.bsr.bank.services.BankAccountService;
 import pl.poznan.put.bsr.bank.services.BankOperationService;
 import pl.poznan.put.bsr.bank.services.UserService;
+import pl.poznan.put.bsr.bank.utils.BasicAuthFilterUtil;
 import pl.poznan.put.bsr.bank.utils.ConstantsUtil;
 import pl.poznan.put.bsr.bank.utils.DataStoreHandlerUtil;
 import pl.poznan.put.bsr.bank.utils.MapBankToIpUtil;
@@ -34,7 +36,9 @@ public class Server {
     private static void initializeRESTServer() throws IOException, URISyntaxException {
         MapBankToIpUtil.getInstance().initialize();
         URI baseUri = UriBuilder.fromUri("http://localhost/").port(ConstantsUtil.REST_PORT).build();
-        ResourceConfig config = new ResourceConfig().packages("rest");
+        HttpAuthenticationFeature feature = HttpAuthenticationFeature.basic("user", "superSecretPassword");
+        ResourceConfig config = new ResourceConfig().packages("pl.poznan.put.bsr.bank.resources");
+        config.register(BasicAuthFilterUtil.class);
         server = GrizzlyHttpServerFactory.createHttpServer(baseUri, config, false);
     }
 
