@@ -17,6 +17,7 @@ import javax.jws.WebMethod;
 import javax.jws.WebParam;
 import javax.jws.WebService;
 import javax.xml.bind.annotation.XmlElement;
+import javax.xml.ws.BindingType;
 import javax.xml.ws.WebServiceContext;
 import java.util.List;
 
@@ -24,6 +25,7 @@ import java.util.List;
  * @author Kamil Walkowiak
  */
 @WebService
+@BindingType(value = "http://java.sun.com/xml/ns/jaxws/2003/05/soap/bindings/HTTP/")
 @SchemaValidation(handler = SchemaValidationHandler.class)
 public class BankAccountService {
     @Resource
