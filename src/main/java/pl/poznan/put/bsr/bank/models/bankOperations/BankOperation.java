@@ -17,7 +17,6 @@ public abstract class BankOperation {
     protected String title;
     @NotNull
     protected double amount;
-    @XmlTransient
     protected double balanceAfter;
     @XmlElement(name = "receiver_account")
     @NotNull

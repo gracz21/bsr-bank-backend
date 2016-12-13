@@ -13,6 +13,7 @@ import pl.poznan.put.bsr.bank.utils.ConstantsUtil;
 import pl.poznan.put.bsr.bank.utils.DataStoreHandlerUtil;
 
 import javax.validation.constraints.NotNull;
+import javax.xml.bind.annotation.XmlTransient;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -23,6 +24,7 @@ import java.util.List;
 @Entity("bankAccounts")
 public class BankAccount {
     @Id
+    @XmlTransient
     private ObjectId id;
     @NotNull
     private String name;
@@ -47,10 +49,6 @@ public class BankAccount {
         history = new ArrayList<>();
     }
 
-    public ObjectId getId() {
-        return id;
-    }
-
     private String generateAccountNo() {
         Datastore datastore = DataStoreHandlerUtil.getInstance().getDataStore();
         Query<Counter> query = datastore.find(Counter.class, "id", "accountNoCounter");
@@ -68,6 +66,10 @@ public class BankAccount {
 
         accountNo = String.format("%02d", checkSum) + accountNo;
         return accountNo;
+    }
+
+    public ObjectId getId() {
+        return id;
     }
 
     public void setId(ObjectId id) {
