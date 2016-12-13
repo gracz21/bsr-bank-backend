@@ -17,21 +17,29 @@ public class BasicAuthFilterUtil implements ContainerRequestFilter {
     public void filter(ContainerRequestContext containerRequestContext) throws IOException {
         String auth = containerRequestContext.getHeaderString("Authorization");
         if(auth == null){
-            throw new WebApplicationException(Response.Status.UNAUTHORIZED);
+            throw new WebApplicationException(Response.status(Response.Status.UNAUTHORIZED)
+                    .entity("{\"error\": \"missing bank authentication data\"}").build());
         }
 
         String[] credentials = Base64.decodeAsString(auth.substring(6)).split(":");
-        if(credentials.length < 2 || !credentials[1].equals(ConstantsUtil.BANK_PASSWORD)) {
-            throw new WebApplicationException(Response.Status.UNAUTHORIZED);
+        if(credentials.length < 2) {
+            throw new WebApplicationException(Response.status(Response.Status.UNAUTHORIZED)
+                    .entity("{\"error\": \"missing bank login or password\"}").build());
+        }
+        if(!credentials[1].equals(ConstantsUtil.BANK_PASSWORD)) {
+            throw new WebApplicationException(Response.status(Response.Status.UNAUTHORIZED)
+                    .entity("{\"error\": \"wrong bank password\"}").build());
         }
 
         if(credentials[0].equals("00109708")) {
-            throw new WebApplicationException(Response.status(418).build());
+            throw new WebApplicationException(Response.status(418)
+                    .entity("{\"error\": \"czesc Asia :P\"}").build());
         }
 
         Map<String, String> bankToIpMap = MapBankToIpUtil.getInstance().getBankToIpMap();
         if(!bankToIpMap.containsKey(credentials[0])) {
-            throw new WebApplicationException(Response.Status.FORBIDDEN);
+            throw new WebApplicationException(Response.status(Response.Status.FORBIDDEN)
+                    .entity("{\"error\": \"unknown bank\"}").build());
         }
     }
 }
