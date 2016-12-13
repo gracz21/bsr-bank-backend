@@ -1,5 +1,5 @@
 # bsr-bank-backend
-SOAP and JSON REST based Web Service for e-banking client as a project on Business distributed systems subject
+SOAP and JSON REST based Web Service for e-banking client as a part of project on Business Distributed Systems subject
 
 Used standards and libraries:
 * JAX-WS (SOAP Web Services)
