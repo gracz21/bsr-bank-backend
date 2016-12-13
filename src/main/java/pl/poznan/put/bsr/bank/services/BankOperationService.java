@@ -1,6 +1,7 @@
 package pl.poznan.put.bsr.bank.services;
 
 import com.sun.xml.ws.developer.SchemaValidation;
+import org.glassfish.jersey.internal.util.Base64;
 import org.mongodb.morphia.Datastore;
 import pl.poznan.put.bsr.bank.exceptions.AuthException;
 import pl.poznan.put.bsr.bank.exceptions.BankOperationException;
@@ -12,10 +13,7 @@ import pl.poznan.put.bsr.bank.models.User;
 import pl.poznan.put.bsr.bank.models.bankOperations.Payment;
 import pl.poznan.put.bsr.bank.models.bankOperations.Transfer;
 import pl.poznan.put.bsr.bank.models.bankOperations.Withdrawal;
-import pl.poznan.put.bsr.bank.utils.AuthUtil;
-import pl.poznan.put.bsr.bank.utils.ConstantsUtil;
-import pl.poznan.put.bsr.bank.utils.DataStoreHandlerUtil;
-import pl.poznan.put.bsr.bank.utils.SAXExceptionToValidationExceptionUtil;
+import pl.poznan.put.bsr.bank.utils.*;
 
 import javax.annotation.Resource;
 import javax.jws.WebMethod;
@@ -24,6 +22,11 @@ import javax.jws.WebService;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.ws.BindingType;
 import javax.xml.ws.WebServiceContext;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.util.Map;
 
 /**
  * @author Kamil Walkowiak
@@ -83,7 +86,7 @@ public class BankOperationService {
                              @WebParam(name = "amount") @XmlElement(required = true) double amount,
                              @WebParam(name = "sourceAccountNo") @XmlElement(required = true) String sourceAccountNo,
                              @WebParam(name = "targetAccountNo") @XmlElement(required = true) String targetAccountNo)
-            throws BankServiceException, BankOperationException, ValidationException, AuthException {
+            throws BankServiceException, BankOperationException, ValidationException, AuthException, IOException {
         SAXExceptionToValidationExceptionUtil.parseExceptions(context.getMessageContext());
 
         Datastore datastore = DataStoreHandlerUtil.getInstance().getDataStore();
@@ -122,7 +125,39 @@ public class BankOperationService {
     }
 
     private void makeExternalTransfer(Datastore datastore, BankAccount sourceBankAccount, Transfer outTransfer)
-            throws BankOperationException {
+            throws BankOperationException, BankServiceException, IOException {
+        String bankNo = outTransfer.getTargetAccountNo().substring(2, 10);
+        Map<String, String> bankToIpMap = MapBankToIpUtil.getInstance().getBankToIpMap();
+        if(!bankToIpMap.containsKey(bankNo)) {
+            throw new BankServiceException("Unknown bank of target account");
+        }
+
         outTransfer.doOperation(sourceBankAccount);
+
+        String charset = "UTF-8";
+        String url = "http://" + bankToIpMap.get(bankNo) + ":" + ConstantsUtil.REST_PORT + "/transfer";
+        String data = "{" +
+                "\"amount\":" + (int)outTransfer.getAmount()*100 + "," +
+                "\"sender_account\":" + "\"" + outTransfer.getSourceAccountNo() + "\"," +
+                "\"receiver_account\":" + "\"" + outTransfer.getTargetAccountNo() + "\"," +
+                "\"title\":" + "\"" + outTransfer.getTitle() + "\"}";
+        HttpURLConnection connection = (HttpURLConnection) new URL(url).openConnection();
+        connection.setRequestMethod("POST");
+        connection.setDoOutput(true);
+        connection.setRequestProperty("Accept-Charset", charset);
+        connection.setRequestProperty("Content-Type", "application/json;charset=" + charset);
+        connection.setRequestProperty("Authorization", "Basic " +
+                Base64.encodeAsString(ConstantsUtil.BANK_ID + ":" + ConstantsUtil.BANK_PASSWORD));
+
+        OutputStream requestBody = connection.getOutputStream();
+        requestBody.write(data.getBytes(charset));
+        requestBody.close();
+        connection.connect();
+
+        int status = connection.getResponseCode();
+        if(status != 201) {
+            String message = connection.getResponseMessage();
+            throw new BankServiceException(message);
+        }
     }
 }
