@@ -5,18 +5,22 @@ import pl.poznan.put.bsr.bank.exceptions.BankOperationException;
 import pl.poznan.put.bsr.bank.models.BankAccount;
 
 import javax.validation.constraints.NotNull;
+import javax.xml.bind.annotation.*;
 
 /**
  * @author Kamil Walkowiak
  */
+@XmlRootElement
+@XmlAccessorType(XmlAccessType.FIELD)
 public class Transfer extends BankOperation {
     public enum TransferDirection {
         IN, OUT
     }
 
+    @XmlElement(name = "sender_account")
     @NotNull
     private String sourceAccountNo;
-    @NotNull
+    @XmlTransient
     private TransferDirection direction;
 
     public Transfer() {

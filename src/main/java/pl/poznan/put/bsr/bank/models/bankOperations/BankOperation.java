@@ -1,30 +1,28 @@
 package pl.poznan.put.bsr.bank.models.bankOperations;
 
-import org.bson.types.ObjectId;
-import org.mongodb.morphia.Datastore;
 import org.mongodb.morphia.annotations.Embedded;
-import org.mongodb.morphia.annotations.Id;
 import pl.poznan.put.bsr.bank.exceptions.BankOperationException;
 import pl.poznan.put.bsr.bank.models.BankAccount;
 
 import javax.validation.constraints.NotNull;
+import javax.xml.bind.annotation.*;
 
 /**
  * @author Kamil Walkowiak
  */
 @Embedded
+@XmlAccessorType(XmlAccessType.FIELD)
 public abstract class BankOperation {
-    @Id
-    protected ObjectId id;
     @NotNull
     protected String title;
     @NotNull
     protected double amount;
-    @NotNull
+    @XmlTransient
     protected double balanceAfter;
+    @XmlElement(name = "receiver_account")
     @NotNull
     protected String targetAccountNo;
-    @NotNull
+    @XmlTransient
     protected boolean executed;
 
     public BankOperation() {
@@ -35,14 +33,6 @@ public abstract class BankOperation {
         this.amount = amount;
         this.targetAccountNo = targetAccountNo;
         this.executed = false;
-    }
-
-    public ObjectId getId() {
-        return id;
-    }
-
-    public void setId(ObjectId id) {
-        this.id = id;
     }
 
     public String getTitle() {
