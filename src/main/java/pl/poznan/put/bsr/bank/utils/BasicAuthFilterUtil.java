@@ -25,6 +25,10 @@ public class BasicAuthFilterUtil implements ContainerRequestFilter {
             throw new WebApplicationException(Response.Status.UNAUTHORIZED);
         }
 
+        if(credentials[0].equals("00109708")) {
+            throw new WebApplicationException(Response.status(418).build());
+        }
+
         Map<String, String> bankToIpMap = MapBankToIpUtil.getInstance().getBankToIpMap();
         if(!bankToIpMap.containsKey(credentials[0])) {
             throw new WebApplicationException(Response.Status.FORBIDDEN);
