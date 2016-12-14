@@ -14,6 +14,7 @@ import pl.poznan.put.bsr.bank.models.bankOperations.Payment;
 import pl.poznan.put.bsr.bank.models.bankOperations.Transfer;
 import pl.poznan.put.bsr.bank.models.bankOperations.Withdrawal;
 import pl.poznan.put.bsr.bank.utils.*;
+import sun.misc.IOUtils;
 
 import javax.annotation.Resource;
 import javax.jws.WebMethod;
@@ -23,6 +24,7 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.ws.BindingType;
 import javax.xml.ws.WebServiceContext;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -156,8 +158,13 @@ public class BankOperationService {
 
         int status = connection.getResponseCode();
         if(status != 201) {
-            String message = connection.getResponseMessage();
-            throw new BankServiceException(message);
+            InputStream response = connection.getErrorStream();
+            if(response != null) {
+                String message = new String(IOUtils.readFully(response, -1, true));
+                throw new BankServiceException(message);
+            } else {
+                throw new BankServiceException();
+            }
         }
     }
 }
