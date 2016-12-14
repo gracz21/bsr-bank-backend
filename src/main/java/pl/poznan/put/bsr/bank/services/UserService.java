@@ -24,7 +24,7 @@ import java.util.*;
  * @author Kamil Walkowiak
  */
 @WebService
-@BindingType(value = "http://java.sun.com/xml/ns/jaxws/2003/05/soap/bindings/HTTP/")
+@BindingType(value = javax.xml.ws.soap.SOAPBinding.SOAP12HTTP_BINDING)
 public class UserService {
     @Resource
     private WebServiceContext context;
