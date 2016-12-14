@@ -1,17 +1,15 @@
 package pl.poznan.put.bsr.bank.services;
 
 import com.mongodb.DuplicateKeyException;
-import com.sun.xml.ws.developer.SchemaValidation;
 import org.mongodb.morphia.Datastore;
 import pl.poznan.put.bsr.bank.exceptions.AuthException;
 import pl.poznan.put.bsr.bank.exceptions.BankServiceException;
 import pl.poznan.put.bsr.bank.exceptions.ValidationException;
-import pl.poznan.put.bsr.bank.handlers.SchemaValidationHandler;
 import pl.poznan.put.bsr.bank.models.Session;
 import pl.poznan.put.bsr.bank.models.User;
 import pl.poznan.put.bsr.bank.utils.AuthUtil;
 import pl.poznan.put.bsr.bank.utils.DataStoreHandlerUtil;
-import pl.poznan.put.bsr.bank.utils.SAXExceptionToValidationExceptionUtil;
+import pl.poznan.put.bsr.bank.utils.ValidateParamsUtil;
 
 import javax.annotation.Resource;
 import javax.jws.WebMethod;
@@ -20,16 +18,13 @@ import javax.jws.WebService;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.ws.BindingType;
 import javax.xml.ws.WebServiceContext;
-import java.util.Arrays;
-import java.util.Base64;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * @author Kamil Walkowiak
  */
 @WebService
 @BindingType(value = "http://java.sun.com/xml/ns/jaxws/2003/05/soap/bindings/HTTP/")
-@SchemaValidation(handler = SchemaValidationHandler.class)
 public class UserService {
     @Resource
     private WebServiceContext context;
@@ -40,7 +35,13 @@ public class UserService {
                          @WebParam(name = "firstName") @XmlElement(required = true) String firstName,
                          @WebParam(name = "lastName") @XmlElement(required = true) String lastName)
             throws BankServiceException, ValidationException {
-        SAXExceptionToValidationExceptionUtil.parseExceptions(context.getMessageContext());
+        Map<String, Object> parametersMap = new HashMap<String, Object>() {{
+            put("user name", userName);
+            put("password", password);
+            put("first name", firstName);
+            put("last name", lastName);
+        }};
+        ValidateParamsUtil.validate(parametersMap);
 
         Datastore datastore =  DataStoreHandlerUtil.getInstance().getDataStore();
         try {
@@ -54,7 +55,11 @@ public class UserService {
     public String login(@WebParam(name = "userName") @XmlElement(required = true) String userName,
                       @WebParam(name = "password") @XmlElement(required = true) String password)
             throws BankServiceException, ValidationException {
-        SAXExceptionToValidationExceptionUtil.parseExceptions(context.getMessageContext());
+        Map<String, Object> parametersMap = new HashMap<String, Object>() {{
+            put("user name", userName);
+            put("password", password);
+        }};
+        ValidateParamsUtil.validate(parametersMap);
 
         Datastore datastore =  DataStoreHandlerUtil.getInstance().getDataStore();
         User user = datastore.find(User.class).field("userName").equal(userName).get();

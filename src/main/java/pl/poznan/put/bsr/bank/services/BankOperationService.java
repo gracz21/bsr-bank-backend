@@ -1,13 +1,11 @@
 package pl.poznan.put.bsr.bank.services;
 
-import com.sun.xml.ws.developer.SchemaValidation;
 import org.glassfish.jersey.internal.util.Base64;
 import org.mongodb.morphia.Datastore;
 import pl.poznan.put.bsr.bank.exceptions.AuthException;
 import pl.poznan.put.bsr.bank.exceptions.BankOperationException;
 import pl.poznan.put.bsr.bank.exceptions.BankServiceException;
 import pl.poznan.put.bsr.bank.exceptions.ValidationException;
-import pl.poznan.put.bsr.bank.handlers.SchemaValidationHandler;
 import pl.poznan.put.bsr.bank.models.BankAccount;
 import pl.poznan.put.bsr.bank.models.User;
 import pl.poznan.put.bsr.bank.models.bankOperations.Payment;
@@ -28,6 +26,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -35,17 +34,21 @@ import java.util.Map;
  */
 @WebService
 @BindingType(value = "http://java.sun.com/xml/ns/jaxws/2003/05/soap/bindings/HTTP/")
-@SchemaValidation(handler = SchemaValidationHandler.class)
 public class BankOperationService {
     @Resource
     private WebServiceContext context;
 
     @WebMethod
     public void makePayment(@WebParam(name = "title") @XmlElement(required = true) String title,
-                            @WebParam(name = "amount") @XmlElement(required = true) double amount,
+                            @WebParam(name = "amount") @XmlElement(required = true) Double amount,
                             @WebParam(name = "targetAccountNo") @XmlElement(required = true) String targetAccountNo)
             throws BankServiceException, BankOperationException, ValidationException, AuthException {
-        SAXExceptionToValidationExceptionUtil.parseExceptions(context.getMessageContext());
+        Map<String, Object> parametersMap = new HashMap<String, Object>() {{
+            put("title", title);
+            put("amount", amount);
+            put("receiver account no", targetAccountNo);
+        }};
+        ValidateParamsUtil.validate(parametersMap);
 
         Datastore datastore = DataStoreHandlerUtil.getInstance().getDataStore();
         AuthUtil.getUserFromWebServiceContext(context, datastore);
@@ -65,7 +68,12 @@ public class BankOperationService {
                                @WebParam(name = "amount") @XmlElement(required = true) double amount,
                                @WebParam(name = "targetAccountNo") @XmlElement(required = true) String targetAccountNo)
             throws BankServiceException, BankOperationException, ValidationException, AuthException {
-        SAXExceptionToValidationExceptionUtil.parseExceptions(context.getMessageContext());
+        Map<String, Object> parametersMap = new HashMap<String, Object>() {{
+            put("title", title);
+            put("amount", amount);
+            put("receiver account no", targetAccountNo);
+        }};
+        ValidateParamsUtil.validate(parametersMap);
 
         Datastore datastore = DataStoreHandlerUtil.getInstance().getDataStore();
         User user = AuthUtil.getUserFromWebServiceContext(context, datastore);
@@ -89,7 +97,13 @@ public class BankOperationService {
                              @WebParam(name = "sourceAccountNo") @XmlElement(required = true) String sourceAccountNo,
                              @WebParam(name = "targetAccountNo") @XmlElement(required = true) String targetAccountNo)
             throws BankServiceException, BankOperationException, ValidationException, AuthException, IOException {
-        SAXExceptionToValidationExceptionUtil.parseExceptions(context.getMessageContext());
+        Map<String, Object> parametersMap = new HashMap<String, Object>() {{
+            put("title", title);
+            put("amount", amount);
+            put("sender account no", sourceAccountNo);
+            put("receiver account no", targetAccountNo);
+        }};
+        ValidateParamsUtil.validate(parametersMap);
 
         Datastore datastore = DataStoreHandlerUtil.getInstance().getDataStore();
         User user = AuthUtil.getUserFromWebServiceContext(context, datastore);

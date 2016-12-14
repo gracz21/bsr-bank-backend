@@ -1,16 +1,14 @@
 package pl.poznan.put.bsr.bank.services;
 
-import com.sun.xml.ws.developer.SchemaValidation;
 import org.mongodb.morphia.Datastore;
 import pl.poznan.put.bsr.bank.exceptions.AuthException;
 import pl.poznan.put.bsr.bank.exceptions.BankServiceException;
 import pl.poznan.put.bsr.bank.exceptions.ValidationException;
-import pl.poznan.put.bsr.bank.handlers.SchemaValidationHandler;
 import pl.poznan.put.bsr.bank.models.BankAccount;
 import pl.poznan.put.bsr.bank.models.User;
 import pl.poznan.put.bsr.bank.utils.AuthUtil;
 import pl.poznan.put.bsr.bank.utils.DataStoreHandlerUtil;
-import pl.poznan.put.bsr.bank.utils.SAXExceptionToValidationExceptionUtil;
+import pl.poznan.put.bsr.bank.utils.ValidateParamsUtil;
 
 import javax.annotation.Resource;
 import javax.jws.WebMethod;
@@ -19,14 +17,15 @@ import javax.jws.WebService;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.ws.BindingType;
 import javax.xml.ws.WebServiceContext;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author Kamil Walkowiak
  */
 @WebService
 @BindingType(value = "http://java.sun.com/xml/ns/jaxws/2003/05/soap/bindings/HTTP/")
-@SchemaValidation(handler = SchemaValidationHandler.class)
 public class BankAccountService {
     @Resource
     private WebServiceContext context;
@@ -42,7 +41,10 @@ public class BankAccountService {
     @WebMethod
     public void addBankAccount(@WebParam(name = "name") @XmlElement(required = true) String name)
             throws BankServiceException, AuthException, ValidationException {
-        SAXExceptionToValidationExceptionUtil.parseExceptions(context.getMessageContext());
+        Map<String, Object> parametersMap = new HashMap<String, Object>() {{
+           put("name", name);
+        }};
+        ValidateParamsUtil.validate(parametersMap);
 
         Datastore datastore =  DataStoreHandlerUtil.getInstance().getDataStore();
         User user = AuthUtil.getUserFromWebServiceContext(context, datastore);
@@ -56,9 +58,12 @@ public class BankAccountService {
     @WebMethod
     public void deleteBankAccount(@WebParam(name = "accountNo") @XmlElement(required = true) String accountNo)
             throws BankServiceException, AuthException, ValidationException {
-        SAXExceptionToValidationExceptionUtil.parseExceptions(context.getMessageContext());
+        Map<String, Object> parametersMap = new HashMap<String, Object>() {{
+            put("account no", accountNo);
+        }};
+        ValidateParamsUtil.validate(parametersMap);
 
-        Datastore datastore =  DataStoreHandlerUtil.getInstance().getDataStore();;
+        Datastore datastore =  DataStoreHandlerUtil.getInstance().getDataStore();
         User user = AuthUtil.getUserFromWebServiceContext(context, datastore);
 
         BankAccount bankAccount = datastore.find(BankAccount.class).field("accountNo").equal(accountNo).get();
