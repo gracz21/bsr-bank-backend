@@ -39,27 +39,22 @@ public class TransferResource {
     }
 
     private void validateTransferCompleteness(Transfer transfer) {
-        boolean valid = true;
         String missingFields = "";
 
         if(transfer.getAmount() == 0.0) {
-            valid = false;
             missingFields += "amount,";
         }
-        if(transfer.getTitle() == null) {
-            valid = false;
+        if(transfer.getTitle() == null || transfer.getTitle().length() == 0) {
             missingFields += "title,";
         }
-        if(transfer.getSourceAccountNo() == null) {
-            valid = false;
+        if(transfer.getSourceAccountNo() == null || transfer.getSourceAccountNo().length() == 0) {
             missingFields += "sender_account,";
         }
-        if(transfer.getTargetAccountNo() == null) {
-            valid = false;
+        if(transfer.getTargetAccountNo() == null || transfer.getTargetAccountNo().length() == 0) {
             missingFields += "receiver_account,";
         }
 
-        if(!valid) {
+        if(missingFields.length() > 0) {
             missingFields = missingFields.substring(0, missingFields.length() -1);
             throw new WebApplicationException(Response.status(Response.Status.BAD_REQUEST).entity("{\n" +
                     "  \"error\": \"" + missingFields + " is missing\"\n" +

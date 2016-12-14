@@ -20,7 +20,7 @@ public abstract class ValidateParamsUtil {
                 }
             }
         }
-        if(errorMessage.length() != 0) {
+        if(errorMessage.length() > 0) {
             errorMessage = errorMessage.substring(0, errorMessage.length() - 1);
             errorMessage += " is missing or is invalid";
             throw new ValidationException(errorMessage);
