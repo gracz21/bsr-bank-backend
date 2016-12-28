@@ -151,7 +151,7 @@ public class BankOperationService {
         outTransfer.doOperation(sourceBankAccount);
 
         String charset = "UTF-8";
-        String url = "http://" + bankToIpMap.get(bankNo) + ":" + ConstantsUtil.REST_PORT + "/transfer";
+        String url = bankToIpMap.get(bankNo) + "/transfer";
         String data = "{" +
                 "\"amount\":" + (int)outTransfer.getAmount()*100 + "," +
                 "\"sender_account\":" + "\"" + outTransfer.getSourceAccountNo() + "\"," +
@@ -163,7 +163,7 @@ public class BankOperationService {
         connection.setRequestProperty("Accept-Charset", charset);
         connection.setRequestProperty("Content-Type", "application/json;charset=" + charset);
         connection.setRequestProperty("Authorization", "Basic " +
-                Base64.encodeAsString(ConstantsUtil.BANK_ID + ":" + ConstantsUtil.BANK_PASSWORD));
+                Base64.encodeAsString(ConstantsUtil.BANK_USERNAME + ":" + ConstantsUtil.BANK_PASSWORD));
 
         OutputStream requestBody = connection.getOutputStream();
         requestBody.write(data.getBytes(charset));

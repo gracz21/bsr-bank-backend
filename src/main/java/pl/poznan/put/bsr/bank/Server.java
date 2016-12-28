@@ -32,7 +32,7 @@ public class Server {
 
     private static void initializeRESTServer() throws IOException, URISyntaxException {
         MapBankToIpUtil.getInstance().initialize();
-        URI baseUri = UriBuilder.fromUri("http://localhost/").port(ConstantsUtil.REST_PORT).build();
+        URI baseUri = UriBuilder.fromUri("http://0.0.0.0/").port(ConstantsUtil.REST_PORT).build();
         ResourceConfig config = new CustomResourceConfig();
         server = GrizzlyHttpServerFactory.createHttpServer(baseUri, config, false);
     }

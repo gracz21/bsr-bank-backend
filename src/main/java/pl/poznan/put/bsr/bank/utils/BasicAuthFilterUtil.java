@@ -31,13 +31,7 @@ public class BasicAuthFilterUtil implements ContainerRequestFilter {
                     .entity("{\"error\": \"wrong bank password\"}").build());
         }
 
-        if(credentials[0].equals("00109708")) {
-            throw new WebApplicationException(Response.status(418)
-                    .entity("{\"error\": \"czesc Asia :P\"}").build());
-        }
-
-        Map<String, String> bankToIpMap = MapBankToIpUtil.getInstance().getBankToIpMap();
-        if(!bankToIpMap.containsKey(credentials[0])) {
+        if(!credentials[0].equals(ConstantsUtil.BANK_USERNAME)) {
             throw new WebApplicationException(Response.status(Response.Status.FORBIDDEN)
                     .entity("{\"error\": \"unknown bank\"}").build());
         }
