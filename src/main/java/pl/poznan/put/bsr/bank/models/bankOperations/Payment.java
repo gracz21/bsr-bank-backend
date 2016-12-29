@@ -5,9 +5,12 @@ import pl.poznan.put.bsr.bank.models.BankAccount;
 import pl.poznan.put.bsr.bank.exceptions.BankOperationException;
 import pl.poznan.put.bsr.bank.utils.DataStoreHandlerUtil;
 
+import javax.xml.bind.annotation.XmlRootElement;
+
 /**
  * @author Kamil Walkowiak
  */
+@XmlRootElement(name = "payment")
 public class Payment extends BankOperation {
     public Payment() {
     }

@@ -11,6 +11,8 @@ import javax.xml.bind.annotation.*;
  * @author Kamil Walkowiak
  */
 @Embedded
+@XmlRootElement(name = "bankOperation")
+@XmlSeeAlso({Payment.class, Transfer.class, Withdrawal.class})
 @XmlAccessorType(XmlAccessType.FIELD)
 public abstract class BankOperation {
     @NotNull

@@ -1,5 +1,6 @@
 package pl.poznan.put.bsr.bank.models;
 
+import jdk.nashorn.internal.runtime.ListAdapter;
 import org.bson.types.ObjectId;
 import org.mongodb.morphia.Datastore;
 import org.mongodb.morphia.annotations.Embedded;
@@ -13,7 +14,11 @@ import pl.poznan.put.bsr.bank.utils.ConstantsUtil;
 import pl.poznan.put.bsr.bank.utils.DataStoreHandlerUtil;
 
 import javax.validation.constraints.NotNull;
+import javax.xml.bind.annotation.XmlElementRef;
+import javax.xml.bind.annotation.XmlElementWrapper;
+import javax.xml.bind.annotation.XmlSeeAlso;
 import javax.xml.bind.annotation.XmlTransient;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -22,6 +27,7 @@ import java.util.List;
  * @author Kamil Walkowiak
  */
 @Entity("bankAccounts")
+@XmlSeeAlso({BankOperation.class})
 public class BankAccount {
     @Id
     @XmlTransient
@@ -100,6 +106,8 @@ public class BankAccount {
         this.balance = balance;
     }
 
+    @XmlElementWrapper(name="history")
+    @XmlElementRef()
     public List<BankOperation> getHistory() {
         return Collections.unmodifiableList(history);
     }

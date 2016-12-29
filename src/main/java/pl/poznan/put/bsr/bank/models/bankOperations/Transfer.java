@@ -10,7 +10,7 @@ import javax.xml.bind.annotation.*;
 /**
  * @author Kamil Walkowiak
  */
-@XmlRootElement
+@XmlRootElement(name = "transfer")
 @XmlAccessorType(XmlAccessType.FIELD)
 public class Transfer extends BankOperation {
     public enum TransferDirection {
