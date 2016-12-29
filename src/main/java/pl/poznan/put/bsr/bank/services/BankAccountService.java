@@ -39,7 +39,7 @@ public class BankAccountService {
     }
 
     @WebMethod
-    public void addBankAccount(@WebParam(name = "name") @XmlElement(required = true) String name)
+    public BankAccount addBankAccount(@WebParam(name = "name") @XmlElement(required = true) String name)
             throws BankServiceException, AuthException, ValidationException {
         Map<String, Object> parametersMap = new HashMap<String, Object>() {{
            put("name", name);
@@ -53,6 +53,8 @@ public class BankAccountService {
         user.addBankAccount(bankAccount);
         datastore.save(bankAccount);
         datastore.save(user);
+
+        return bankAccount;
     }
 
     @WebMethod
