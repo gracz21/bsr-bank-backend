@@ -1,6 +1,5 @@
 package pl.poznan.put.bsr.bank.models;
 
-import jdk.nashorn.internal.runtime.ListAdapter;
 import org.bson.types.ObjectId;
 import org.mongodb.morphia.Datastore;
 import org.mongodb.morphia.annotations.Embedded;
@@ -18,7 +17,6 @@ import javax.xml.bind.annotation.XmlElementRef;
 import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlSeeAlso;
 import javax.xml.bind.annotation.XmlTransient;
-import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
