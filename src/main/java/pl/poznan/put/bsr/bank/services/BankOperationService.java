@@ -8,10 +8,7 @@ import pl.poznan.put.bsr.bank.exceptions.BankServiceException;
 import pl.poznan.put.bsr.bank.exceptions.ValidationException;
 import pl.poznan.put.bsr.bank.models.BankAccount;
 import pl.poznan.put.bsr.bank.models.User;
-import pl.poznan.put.bsr.bank.models.bankOperations.BankOperation;
-import pl.poznan.put.bsr.bank.models.bankOperations.Payment;
-import pl.poznan.put.bsr.bank.models.bankOperations.Transfer;
-import pl.poznan.put.bsr.bank.models.bankOperations.Withdrawal;
+import pl.poznan.put.bsr.bank.models.bankOperations.*;
 import pl.poznan.put.bsr.bank.utils.*;
 import sun.misc.IOUtils;
 
@@ -38,6 +35,30 @@ import java.util.Map;
 public class BankOperationService {
     @Resource
     private WebServiceContext context;
+
+    @WebMethod
+    public BankOperation countFee(@WebParam(name = "amount") @XmlElement(required = true) Double amount,
+                                  @WebParam(name = "targetAccountNo") @XmlElement(required = true) String targetAccountNo)
+            throws ValidationException, AuthException, BankServiceException, BankOperationException {
+        Map<String, Object> parametersMap = new HashMap<String, Object>() {{
+            put("amount", amount);
+            put("receiver account no", targetAccountNo);
+        }};
+        ValidateParamsUtil.validate(parametersMap);
+
+        Datastore datastore = DataStoreHandlerUtil.getInstance().getDataStore();
+        AuthUtil.getUserFromWebServiceContext(context, datastore);
+
+        BankAccount bankAccount = datastore.find(BankAccount.class).field("accountNo").equal(targetAccountNo).get();
+        if(bankAccount == null) {
+            throw new BankServiceException("Target bank account does not exist");
+        }
+
+        Fee fee = new Fee(amount, targetAccountNo);
+        fee.doOperation(bankAccount);
+        datastore.save(bankAccount);
+        return fee;
+    }
 
     @WebMethod
     public BankOperation makePayment(@WebParam(name = "title") @XmlElement(required = true) String title,
