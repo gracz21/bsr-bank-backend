@@ -12,7 +12,7 @@ import javax.xml.bind.annotation.*;
  */
 @Embedded
 @XmlRootElement(name = "bankOperation")
-@XmlSeeAlso({Payment.class, Transfer.class, Withdrawal.class})
+@XmlSeeAlso({Payment.class, Transfer.class, Withdrawal.class, Fee.class})
 @XmlAccessorType(XmlAccessType.FIELD)
 public abstract class BankOperation {
     @NotNull
