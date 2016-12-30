@@ -16,12 +16,16 @@ public abstract class ValidateParamsUtil {
             } else if(parameter.getValue() instanceof String) {
                 String value = (String)parameter.getValue();
                 if(value.length() == 0) {
-                    errorMessage += parameter.getKey() + ",";
+                    errorMessage += parameter.getKey() + ", ";
                 }
             }
         }
         if(errorMessage.length() > 0) {
-            errorMessage = errorMessage.substring(0, errorMessage.length() - 1);
+            errorMessage = errorMessage.substring(0, 1).toUpperCase() + errorMessage.substring(1, errorMessage.length() - 2);
+            int index = errorMessage.lastIndexOf(",");
+            if(index != -1) {
+                errorMessage = errorMessage.substring(0, index) + " and" + errorMessage.substring(index + 1);
+            }
             errorMessage += " is missing or is invalid";
             throw new ValidationException(errorMessage);
         }
