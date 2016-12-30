@@ -1,6 +1,5 @@
 package pl.poznan.put.bsr.bank.models.bankOperations;
 
-import org.mongodb.morphia.Datastore;
 import pl.poznan.put.bsr.bank.exceptions.BankOperationException;
 import pl.poznan.put.bsr.bank.models.BankAccount;
 
