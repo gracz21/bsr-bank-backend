@@ -8,6 +8,7 @@ import pl.poznan.put.bsr.bank.exceptions.BankServiceException;
 import pl.poznan.put.bsr.bank.exceptions.ValidationException;
 import pl.poznan.put.bsr.bank.models.BankAccount;
 import pl.poznan.put.bsr.bank.models.User;
+import pl.poznan.put.bsr.bank.models.bankOperations.BankOperation;
 import pl.poznan.put.bsr.bank.models.bankOperations.Payment;
 import pl.poznan.put.bsr.bank.models.bankOperations.Transfer;
 import pl.poznan.put.bsr.bank.models.bankOperations.Withdrawal;
@@ -39,9 +40,9 @@ public class BankOperationService {
     private WebServiceContext context;
 
     @WebMethod
-    public void makePayment(@WebParam(name = "title") @XmlElement(required = true) String title,
-                            @WebParam(name = "amount") @XmlElement(required = true) Double amount,
-                            @WebParam(name = "targetAccountNo") @XmlElement(required = true) String targetAccountNo)
+    public BankOperation makePayment(@WebParam(name = "title") @XmlElement(required = true) String title,
+                                     @WebParam(name = "amount") @XmlElement(required = true) Double amount,
+                                     @WebParam(name = "targetAccountNo") @XmlElement(required = true) String targetAccountNo)
             throws BankServiceException, BankOperationException, ValidationException, AuthException {
         Map<String, Object> parametersMap = new HashMap<String, Object>() {{
             put("title", title);
@@ -61,10 +62,11 @@ public class BankOperationService {
         Payment payment = new Payment(title, amount, targetAccountNo);
         payment.doOperation(bankAccount);
         datastore.save(bankAccount);
+        return payment;
     }
 
     @WebMethod
-    public void makeWithdrawal(@WebParam(name = "title") @XmlElement(required = true) String title,
+    public BankOperation makeWithdrawal(@WebParam(name = "title") @XmlElement(required = true) String title,
                                @WebParam(name = "amount") @XmlElement(required = true) double amount,
                                @WebParam(name = "targetAccountNo") @XmlElement(required = true) String targetAccountNo)
             throws BankServiceException, BankOperationException, ValidationException, AuthException {
@@ -89,10 +91,11 @@ public class BankOperationService {
         Withdrawal withdrawal = new Withdrawal(title, amount, targetAccountNo);
         withdrawal.doOperation(bankAccount);
         datastore.save(bankAccount);
+        return withdrawal;
     }
 
     @WebMethod
-    public void makeTransfer(@WebParam(name = "title") @XmlElement(required = true) String title,
+    public BankOperation makeTransfer(@WebParam(name = "title") @XmlElement(required = true) String title,
                              @WebParam(name = "amount") @XmlElement(required = true) double amount,
                              @WebParam(name = "sourceAccountNo") @XmlElement(required = true) String sourceAccountNo,
                              @WebParam(name = "targetAccountNo") @XmlElement(required = true) String targetAccountNo)
@@ -128,6 +131,8 @@ public class BankOperationService {
         } else {
             makeExternalTransfer(datastore, sourceBankAccount, outTransfer);
         }
+
+        return outTransfer;
     }
 
     private void makeInternalTransfer(Datastore datastore, BankAccount sourceBankAccount, BankAccount targetBankAccount,
