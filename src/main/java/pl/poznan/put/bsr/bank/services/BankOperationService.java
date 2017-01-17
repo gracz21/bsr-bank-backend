@@ -72,6 +72,8 @@ public class BankOperationService {
         }};
         ValidateParamsUtil.validate(parametersMap);
 
+        checkTransferLimit(amount);
+
         Datastore datastore = DataStoreHandlerUtil.getInstance().getDataStore();
         AuthUtil.getUserFromWebServiceContext(context, datastore);
 
@@ -97,6 +99,8 @@ public class BankOperationService {
             put("receiver account no", targetAccountNo);
         }};
         ValidateParamsUtil.validate(parametersMap);
+
+        checkTransferLimit(amount);
 
         Datastore datastore = DataStoreHandlerUtil.getInstance().getDataStore();
         User user = AuthUtil.getUserFromWebServiceContext(context, datastore);
@@ -129,6 +133,8 @@ public class BankOperationService {
         }};
         ValidateParamsUtil.validate(parametersMap);
 
+        checkTransferLimit(amount);
+
         Datastore datastore = DataStoreHandlerUtil.getInstance().getDataStore();
         User user = AuthUtil.getUserFromWebServiceContext(context, datastore);
 
@@ -157,6 +163,12 @@ public class BankOperationService {
         }
 
         return outTransfer;
+    }
+
+    private void checkTransferLimit(double amount) throws BankServiceException {
+        if(amount > 1000000){
+            throw new BankServiceException("Transfer amount is higher than max limit of 1 000 000");
+        }
     }
 
     private void makeInternalTransfer(Datastore datastore, BankAccount sourceBankAccount, BankAccount targetBankAccount,
