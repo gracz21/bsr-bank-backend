@@ -179,7 +179,7 @@ public class BankOperationService {
         String charset = "UTF-8";
         String url = bankToIpMap.get(bankNo) + "/transfer";
         String data = "{" +
-                "\"amount\":" + (int)outTransfer.getAmount()*100 + "," +
+                "\"amount\":" + (int)(outTransfer.getAmount()*100) + "," +
                 "\"sender_account\":" + "\"" + outTransfer.getSourceAccountNo() + "\"," +
                 "\"receiver_account\":" + "\"" + outTransfer.getTargetAccountNo() + "\"," +
                 "\"title\":" + "\"" + outTransfer.getTitle() + "\"}";
@@ -205,6 +205,8 @@ public class BankOperationService {
             } else {
                 throw new BankServiceException();
             }
+        } else {
+            datastore.save(sourceBankAccount);
         }
     }
 }
