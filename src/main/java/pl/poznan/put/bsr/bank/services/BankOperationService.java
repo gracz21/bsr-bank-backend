@@ -139,6 +139,9 @@ public class BankOperationService {
         if(!user.containsBankAccount(sourceAccountNo)) {
             throw new BankServiceException("Source account does not belong to user");
         }
+        if(sourceAccountNo.equals(targetAccountNo)) {
+            throw new BankServiceException("Target account is the same as source account");
+        }
 
         Transfer outTransfer = new Transfer(title, amount, sourceAccountNo, targetAccountNo, Transfer.TransferDirection.OUT);
 
