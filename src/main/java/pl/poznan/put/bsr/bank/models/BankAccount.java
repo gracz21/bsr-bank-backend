@@ -48,9 +48,21 @@ public class BankAccount {
 
     public BankAccount(String name) {
         this.name = name;
-        accountNo = generateAccountNo();
+        accountNo = generateFullAccountNo();
         balance = 0.0;
         history = new ArrayList<>();
+    }
+
+    public static boolean validateCheckSum(String fullAccountNo) {
+        String accountNo = fullAccountNo.substring(0, 16);
+        String resultFullAccountNo = generateCheckSum(accountNo) + accountNo;
+
+        return fullAccountNo.equals(resultFullAccountNo);
+    }
+
+    private String generateFullAccountNo() {
+        accountNo = generateCheckSum(accountNo) + generateAccountNo();
+        return accountNo;
     }
 
     private String generateAccountNo() {
@@ -58,9 +70,10 @@ public class BankAccount {
         Query<Counter> query = datastore.find(Counter.class, "id", "accountNoCounter");
         UpdateOperations<Counter> operation = datastore.createUpdateOperations(Counter.class).inc("seq");
         long count = datastore.findAndModify(query, operation).getSeq();
+        return ConstantsUtil.BANK_ID + String.format("%016d", count);
+    }
 
-        String accountNo = ConstantsUtil.BANK_ID + String.format("%016d", count);
-
+    private static String generateCheckSum(String accountNo) {
         String tmpNo = accountNo + "252100";
         String part1 = tmpNo.substring(0, 15);
         String part2 = tmpNo.substring(15);
@@ -68,8 +81,7 @@ public class BankAccount {
         long rest2 = Long.parseLong(rest1 + part2)%97;
         long checkSum = 98 - rest2;
 
-        accountNo = String.format("%02d", checkSum) + accountNo;
-        return accountNo;
+        return String.format("%02d", checkSum);
     }
 
     public ObjectId getId() {

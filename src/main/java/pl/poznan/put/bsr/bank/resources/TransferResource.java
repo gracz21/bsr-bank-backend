@@ -45,11 +45,12 @@ public class TransferResource {
         if(transfer.getAmount() <= 0.0) {
             errorMessage += "amount,";
         }
-        if(transfer.getTitle() == null || transfer.getTitle().length() == 0 || transfer.getTitle().matches(".*\\p{C}.*")) {
+        if(transfer.getTitle() == null || transfer.getTitle().length() == 0 ||transfer.getTitle().matches(".*\\p{C}.*")) {
             errorMessage += "title,";
         }
-        if(transfer.getSourceAccountNo() == null ||
-                !(transfer.getSourceAccountNo().matches("[0-9]+") && transfer.getSourceAccountNo().length() == 26)) {
+        if(transfer.getSourceAccountNo() == null || !(transfer.getSourceAccountNo().matches("[0-9]+") &&
+                transfer.getSourceAccountNo().length() == 26) &&
+                BankAccount.validateCheckSum(transfer.getSourceAccountNo())) {
             errorMessage += "sender_account,";
         }
         if(transfer.getTargetAccountNo() == null ||
