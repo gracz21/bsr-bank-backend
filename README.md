@@ -6,3 +6,4 @@ Used standards and libraries:
 * Grizzly (HTTP Server)
 * Jersey (JSON REST Web Services)
 * Morphia (MongoDB ORM)
+* JAXB (XML marshalling/unmarshalling)
