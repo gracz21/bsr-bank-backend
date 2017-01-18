@@ -14,7 +14,7 @@ public abstract class ValidateParamsUtil {
         for(Map.Entry<String, String> parameter: parametersMap.entrySet()) {
             String key = parameter.getKey();
             String value = parameter.getValue();
-            if(value == null || value.length() == 0 ||
+            if(value == null || value.length() == 0 || value.matches(".*\\p{C}.*") ||
                     (key.contains("account") && !(value.matches("[0-9]+") && value.length() == 26))) {
                 errorMessage += key + ", ";
             }

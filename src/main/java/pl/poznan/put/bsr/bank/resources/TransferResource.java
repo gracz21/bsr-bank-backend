@@ -1,5 +1,6 @@
 package pl.poznan.put.bsr.bank.resources;
 
+import org.json.simple.JSONObject;
 import org.mongodb.morphia.Datastore;
 import pl.poznan.put.bsr.bank.exceptions.BankOperationException;
 import pl.poznan.put.bsr.bank.models.BankAccount;
@@ -44,7 +45,7 @@ public class TransferResource {
         if(transfer.getAmount() <= 0.0) {
             errorMessage += "amount,";
         }
-        if(transfer.getTitle() == null || transfer.getTitle().length() == 0) {
+        if(transfer.getTitle() == null || transfer.getTitle().length() == 0 || transfer.getTitle().matches(".*\\p{C}.*")) {
             errorMessage += "title,";
         }
         if(transfer.getSourceAccountNo() == null ||
