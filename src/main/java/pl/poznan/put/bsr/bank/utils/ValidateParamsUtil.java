@@ -8,13 +8,15 @@ import java.util.Map;
  * @author Kamil Walkowiak
  */
 public abstract class ValidateParamsUtil {
-    public static void validatePresence(Map<String, Object> parametersMap) throws ValidationException {
+    public static void validateParameters(Map<String, String> parametersMap) throws ValidationException {
         String errorMessage = "";
 
-        for(Map.Entry<String, Object> parameter: parametersMap.entrySet()) {
-            String value = (String)parameter.getValue();
-            if(value == null || value.length() == 0) {
-                errorMessage += parameter.getKey() + ", ";
+        for(Map.Entry<String, String> parameter: parametersMap.entrySet()) {
+            String key = parameter.getKey();
+            String value = parameter.getValue();
+            if(value == null || value.length() == 0 ||
+                    (key.contains("account") && !(value.matches("[0-9]+") && value.length() == 26))) {
+                errorMessage += key + ", ";
             }
         }
 
@@ -24,7 +26,7 @@ public abstract class ValidateParamsUtil {
             if(index != -1) {
                 errorMessage = errorMessage.substring(0, index) + " and" + errorMessage.substring(index + 1);
             }
-            errorMessage += " is missing";
+            errorMessage += " is missing or invalid";
             throw new ValidationException(errorMessage);
         }
     }

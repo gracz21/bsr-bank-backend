@@ -39,10 +39,10 @@ public class BankOperationService {
     @WebMethod
     public BankOperation countFee(@WebParam(name = "targetAccountNo") @XmlElement(required = true) String targetAccountNo)
             throws ValidationException, AuthException, BankServiceException, BankOperationException {
-        Map<String, Object> parametersMap = new HashMap<String, Object>() {{
+        Map<String, String> parametersMap = new HashMap<String, String>() {{
             put("receiver account no", targetAccountNo);
         }};
-        ValidateParamsUtil.validatePresence(parametersMap);
+        ValidateParamsUtil.validateParameters(parametersMap);
 
         Datastore datastore = DataStoreHandlerUtil.getInstance().getDataStore();
         AuthUtil.getUserFromWebServiceContext(context, datastore);
@@ -63,12 +63,12 @@ public class BankOperationService {
                                      @WebParam(name = "amount") @XmlElement(required = true) String amount,
                                      @WebParam(name = "targetAccountNo") @XmlElement(required = true) String targetAccountNo)
             throws BankServiceException, BankOperationException, ValidationException, AuthException {
-        Map<String, Object> parametersMap = new HashMap<String, Object>() {{
+        Map<String, String> parametersMap = new HashMap<String, String>() {{
             put("title", title);
             put("amount", amount);
             put("receiver account no", targetAccountNo);
         }};
-        ValidateParamsUtil.validatePresence(parametersMap);
+        ValidateParamsUtil.validateParameters(parametersMap);
         double parsedAmount = ValidateParamsUtil.parseAmount(amount);
         checkTransferLimit(parsedAmount);
 
@@ -91,12 +91,12 @@ public class BankOperationService {
                                @WebParam(name = "amount") @XmlElement(required = true) String amount,
                                @WebParam(name = "targetAccountNo") @XmlElement(required = true) String targetAccountNo)
             throws BankServiceException, BankOperationException, ValidationException, AuthException {
-        Map<String, Object> parametersMap = new HashMap<String, Object>() {{
+        Map<String, String> parametersMap = new HashMap<String, String>() {{
             put("title", title);
             put("amount", amount);
             put("receiver account no", targetAccountNo);
         }};
-        ValidateParamsUtil.validatePresence(parametersMap);
+        ValidateParamsUtil.validateParameters(parametersMap);
         double parsedAmount = ValidateParamsUtil.parseAmount(amount);
         checkTransferLimit(parsedAmount);
 
@@ -123,13 +123,13 @@ public class BankOperationService {
                              @WebParam(name = "sourceAccountNo") @XmlElement(required = true) String sourceAccountNo,
                              @WebParam(name = "targetAccountNo") @XmlElement(required = true) String targetAccountNo)
             throws BankServiceException, BankOperationException, ValidationException, AuthException, IOException {
-        Map<String, Object> parametersMap = new HashMap<String, Object>() {{
+        Map<String, String> parametersMap = new HashMap<String, String>() {{
             put("title", title);
             put("amount", amount);
             put("sender account no", sourceAccountNo);
             put("receiver account no", targetAccountNo);
         }};
-        ValidateParamsUtil.validatePresence(parametersMap);
+        ValidateParamsUtil.validateParameters(parametersMap);
         double parsedAmount = ValidateParamsUtil.parseAmount(amount);
         checkTransferLimit(parsedAmount);
 

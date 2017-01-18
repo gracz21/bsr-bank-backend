@@ -35,13 +35,13 @@ public class UserService {
                          @WebParam(name = "firstName") @XmlElement(required = true) String firstName,
                          @WebParam(name = "lastName") @XmlElement(required = true) String lastName)
             throws BankServiceException, ValidationException {
-        Map<String, Object> parametersMap = new HashMap<String, Object>() {{
+        Map<String, String> parametersMap = new HashMap<String, String>() {{
             put("user name", userName);
             put("password", password);
             put("first name", firstName);
             put("last name", lastName);
         }};
-        ValidateParamsUtil.validatePresence(parametersMap);
+        ValidateParamsUtil.validateParameters(parametersMap);
 
         Datastore datastore =  DataStoreHandlerUtil.getInstance().getDataStore();
         try {
@@ -55,11 +55,11 @@ public class UserService {
     public String login(@WebParam(name = "userName") @XmlElement(required = true) String userName,
                       @WebParam(name = "password") @XmlElement(required = true) String password)
             throws BankServiceException, ValidationException {
-        Map<String, Object> parametersMap = new HashMap<String, Object>() {{
+        Map<String, String> parametersMap = new HashMap<String, String>() {{
             put("user name", userName);
             put("password", password);
         }};
-        ValidateParamsUtil.validatePresence(parametersMap);
+        ValidateParamsUtil.validateParameters(parametersMap);
 
         Datastore datastore =  DataStoreHandlerUtil.getInstance().getDataStore();
         User user = datastore.find(User.class).field("userName").equal(userName).get();

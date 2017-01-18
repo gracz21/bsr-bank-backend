@@ -41,10 +41,10 @@ public class BankAccountService {
     @WebMethod
     public BankAccount addBankAccount(@WebParam(name = "name") @XmlElement(required = true) String name)
             throws BankServiceException, AuthException, ValidationException {
-        Map<String, Object> parametersMap = new HashMap<String, Object>() {{
+        Map<String, String> parametersMap = new HashMap<String, String>() {{
            put("name", name);
         }};
-        ValidateParamsUtil.validatePresence(parametersMap);
+        ValidateParamsUtil.validateParameters(parametersMap);
 
         Datastore datastore =  DataStoreHandlerUtil.getInstance().getDataStore();
         User user = AuthUtil.getUserFromWebServiceContext(context, datastore);
@@ -60,10 +60,10 @@ public class BankAccountService {
     @WebMethod
     public void deleteBankAccount(@WebParam(name = "accountNo") @XmlElement(required = true) String accountNo)
             throws BankServiceException, AuthException, ValidationException {
-        Map<String, Object> parametersMap = new HashMap<String, Object>() {{
+        Map<String, String> parametersMap = new HashMap<String, String>() {{
             put("account no", accountNo);
         }};
-        ValidateParamsUtil.validatePresence(parametersMap);
+        ValidateParamsUtil.validateParameters(parametersMap);
 
         Datastore datastore =  DataStoreHandlerUtil.getInstance().getDataStore();
         User user = AuthUtil.getUserFromWebServiceContext(context, datastore);
