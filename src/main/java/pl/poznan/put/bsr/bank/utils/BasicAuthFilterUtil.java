@@ -31,7 +31,7 @@ public class BasicAuthFilterUtil implements ContainerRequestFilter {
         }
         if(!credentials[0].equals(ConstantsUtil.BANK_USERNAME)) {
             throw new WebApplicationException(Response.status(Response.Status.UNAUTHORIZED)
-                    .entity("{\"error\": \"unknown bank\"}").build());
+                    .entity("{\"error\": \"wrong bank login\"}").build());
         }
     }
 }
