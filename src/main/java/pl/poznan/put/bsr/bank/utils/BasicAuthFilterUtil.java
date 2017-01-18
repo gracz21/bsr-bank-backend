@@ -29,9 +29,8 @@ public class BasicAuthFilterUtil implements ContainerRequestFilter {
             throw new WebApplicationException(Response.status(Response.Status.UNAUTHORIZED)
                     .entity("{\"error\": \"wrong bank password\"}").build());
         }
-
         if(!credentials[0].equals(ConstantsUtil.BANK_USERNAME)) {
-            throw new WebApplicationException(Response.status(Response.Status.FORBIDDEN)
+            throw new WebApplicationException(Response.status(Response.Status.UNAUTHORIZED)
                     .entity("{\"error\": \"unknown bank\"}").build());
         }
     }

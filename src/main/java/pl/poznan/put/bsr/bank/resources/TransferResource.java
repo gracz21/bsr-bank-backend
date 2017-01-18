@@ -20,7 +20,7 @@ public class TransferResource {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Response makeTransfer(@NotNull Transfer transfer) throws BankOperationException {
-        validateTransferCompleteness(transfer);
+        validateTransfer(transfer);
         prepareTransfer(transfer);
 
         Datastore datastore = DataStoreHandlerUtil.getInstance().getDataStore();
@@ -38,7 +38,7 @@ public class TransferResource {
         return Response.created(null).build();
     }
 
-    private void validateTransferCompleteness(Transfer transfer) {
+    private void validateTransfer(Transfer transfer) {
         String errorMessage = "";
 
         if(transfer.getAmount() <= 0.0) {
