@@ -1,6 +1,9 @@
 package pl.poznan.put.bsr.bank.services;
 
 import org.glassfish.jersey.internal.util.Base64;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 import org.mongodb.morphia.Datastore;
 import pl.poznan.put.bsr.bank.exceptions.AuthException;
 import pl.poznan.put.bsr.bank.exceptions.BankOperationException;
@@ -214,9 +217,20 @@ public class BankOperationService {
             InputStream response = connection.getErrorStream();
             if(response != null) {
                 String message = new String(IOUtils.readFully(response, -1, true));
-                throw new BankServiceException(message);
+                JSONParser parser = new JSONParser();
+                JSONObject obj = null;
+                try {
+                    obj = (JSONObject)parser.parse(message);
+                    if(obj.containsKey("error")) {
+                        throw new BankServiceException((String)obj.get("error"));
+                    } else {
+                        throw new BankServiceException("Unknown error occurs");
+                    }
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
             } else {
-                throw new BankServiceException();
+                throw new BankServiceException("Unknown error occurs");
             }
         } else {
             datastore.save(sourceBankAccount);
