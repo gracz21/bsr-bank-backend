@@ -7,6 +7,7 @@ import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.*;
 
 /**
+ * Transfer bank operation class
  * @author Kamil Walkowiak
  */
 @XmlRootElement(name = "transfer")

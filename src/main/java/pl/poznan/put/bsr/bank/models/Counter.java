@@ -6,6 +6,7 @@ import org.mongodb.morphia.annotations.Id;
 import javax.validation.constraints.NotNull;
 
 /**
+ * Bank account no base counter class
  * @author Kamil Walkowiak
  */
 @Entity("counters")

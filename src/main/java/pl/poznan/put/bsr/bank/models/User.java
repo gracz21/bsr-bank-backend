@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 /**
+ * User class
  * @author Kamil Walkowiak
  */
 @Entity("users")
@@ -91,6 +92,11 @@ public class User {
         bankAccounts.add(bankAccount);
     }
 
+    /**
+     * Check if user is owner of bank account with given no
+     * @param accountNo account no of which should be checked
+     * @return true if user owns given account, false otherwise
+     */
     public boolean containsBankAccount(String accountNo) {
         return bankAccounts.stream().filter(bankAccount -> bankAccount.getAccountNo().equals(accountNo)).count() > 0;
     }

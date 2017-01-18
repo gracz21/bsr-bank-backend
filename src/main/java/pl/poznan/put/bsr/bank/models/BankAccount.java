@@ -22,6 +22,7 @@ import java.util.Collections;
 import java.util.List;
 
 /**
+ * Bank account class
  * @author Kamil Walkowiak
  */
 @Entity("bankAccounts")
@@ -53,6 +54,11 @@ public class BankAccount {
         history = new ArrayList<>();
     }
 
+    /**
+     * Validate checksum of given full bank account no
+     * @param fullAccountNo full bank account no which checksum should be validated
+     * @return true if checksum is valid, false otherwise
+     */
     public static boolean validateCheckSum(String fullAccountNo) {
         String accountNo = fullAccountNo.substring(0, 16);
         String resultFullAccountNo = generateCheckSum(accountNo) + accountNo;

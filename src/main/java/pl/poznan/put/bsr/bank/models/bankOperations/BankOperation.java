@@ -8,6 +8,7 @@ import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.*;
 
 /**
+ * Abstract parent bank operation class
  * @author Kamil Walkowiak
  */
 @Embedded
@@ -76,6 +77,11 @@ public abstract class BankOperation {
         this.executed = executed;
     }
 
+    /**
+     * Execute this bank operation
+     * @param bankAccount bank account on which this operation will be executed
+     * @throws BankOperationException if bank operation parameters are invalid
+     */
     public void doOperation(BankAccount bankAccount) throws BankOperationException {
         if (executed) {
             throw new BankOperationException("Operation has been already executed");

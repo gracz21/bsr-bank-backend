@@ -6,6 +6,7 @@ import pl.poznan.put.bsr.bank.models.BankAccount;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
+ * Withdrawal bank operation class
  * @author Kamil Walkowiak
  */
 @XmlRootElement(name = "withdrawal")

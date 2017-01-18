@@ -7,6 +7,7 @@ import pl.poznan.put.bsr.bank.utils.ConstantsUtil;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
+ * Count bank fee bank operation class
  * @author Kamil Walkowiak
  */
 @XmlRootElement(name = "fee")

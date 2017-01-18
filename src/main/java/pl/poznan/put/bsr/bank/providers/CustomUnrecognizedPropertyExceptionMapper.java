@@ -8,6 +8,7 @@ import javax.ws.rs.ext.ExceptionMapper;
 import javax.ws.rs.ext.Provider;
 
 /**
+ * Custom mapper class for unrecognized JSON property exception
  * @author Kamil Walkowiak
  */
 @Provider
