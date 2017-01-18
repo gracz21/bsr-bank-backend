@@ -49,10 +49,10 @@ public class Transfer extends BankOperation {
 
     @Override
     protected void execute(BankAccount bankAccount) throws BankOperationException {
-        if(direction == TransferDirection.IN) {
+        if (direction == TransferDirection.IN) {
             bankAccount.setBalance(bankAccount.getBalance() + amount);
         } else {
-            if(amount > bankAccount.getBalance()) {
+            if (amount > bankAccount.getBalance()) {
                 throw new BankOperationException("Amount bigger than current account balance");
             }
 

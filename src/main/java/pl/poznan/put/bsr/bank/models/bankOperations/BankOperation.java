@@ -77,10 +77,10 @@ public abstract class BankOperation {
     }
 
     public void doOperation(BankAccount bankAccount) throws BankOperationException {
-        if(executed) {
+        if (executed) {
             throw new BankOperationException("Operation has been already executed");
         }
-        if(amount <= 0) {
+        if (amount <= 0) {
             throw new BankOperationException("Amount cannot be less or equal to 0");
         }
 

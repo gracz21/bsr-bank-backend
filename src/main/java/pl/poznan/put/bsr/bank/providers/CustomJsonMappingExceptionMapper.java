@@ -15,7 +15,7 @@ public class CustomJsonMappingExceptionMapper implements ExceptionMapper<JsonMap
     @Override
     public Response toResponse(JsonMappingException e) {
         String message;
-        if(e.getPath().size() != 0) {
+        if (e.getPath().size() != 0) {
             message = "{\"error\":\"" + e.getPath().get(0).getFieldName() + " is invalid\"}";
         } else {
             message = "{\"error\": \"invalid JSON format\"}";

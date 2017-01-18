@@ -41,7 +41,7 @@ public class BankAccount {
     private List<BankOperation> history;
 
     public BankAccount() {
-        if(history == null) {
+        if (history == null) {
             history = new ArrayList<>();
         }
     }
@@ -77,8 +77,8 @@ public class BankAccount {
         String tmpNo = accountNo + "252100";
         String part1 = tmpNo.substring(0, 15);
         String part2 = tmpNo.substring(15);
-        long rest1 = Long.parseLong(part1)%97;
-        long rest2 = Long.parseLong(rest1 + part2)%97;
+        long rest1 = Long.parseLong(part1) % 97;
+        long rest2 = Long.parseLong(rest1 + part2) % 97;
         long checkSum = 98 - rest2;
 
         return String.format("%02d", checkSum);
@@ -116,7 +116,7 @@ public class BankAccount {
         this.balance = balance;
     }
 
-    @XmlElementWrapper(name="history")
+    @XmlElementWrapper(name = "history")
     @XmlElementRef()
     public List<BankOperation> getHistory() {
         return Collections.unmodifiableList(history);

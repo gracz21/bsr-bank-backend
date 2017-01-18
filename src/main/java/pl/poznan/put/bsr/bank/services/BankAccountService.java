@@ -32,7 +32,7 @@ public class BankAccountService {
 
     @WebMethod
     public List<BankAccount> getCurrentUserBankAccounts() throws BankServiceException, AuthException {
-        Datastore datastore =  DataStoreHandlerUtil.getInstance().getDataStore();
+        Datastore datastore = DataStoreHandlerUtil.getInstance().getDataStore();
         User user = AuthUtil.getUserFromWebServiceContext(context, datastore);
 
         return user.getBankAccounts();
@@ -42,11 +42,11 @@ public class BankAccountService {
     public BankAccount addBankAccount(@WebParam(name = "name") @XmlElement(required = true) String name)
             throws BankServiceException, AuthException, ValidationException {
         Map<String, String> parametersMap = new HashMap<String, String>() {{
-           put("name", name);
+            put("name", name);
         }};
         ValidateParamsUtil.validateParameters(parametersMap);
 
-        Datastore datastore =  DataStoreHandlerUtil.getInstance().getDataStore();
+        Datastore datastore = DataStoreHandlerUtil.getInstance().getDataStore();
         User user = AuthUtil.getUserFromWebServiceContext(context, datastore);
 
         BankAccount bankAccount = new BankAccount(name);
@@ -65,14 +65,14 @@ public class BankAccountService {
         }};
         ValidateParamsUtil.validateParameters(parametersMap);
 
-        Datastore datastore =  DataStoreHandlerUtil.getInstance().getDataStore();
+        Datastore datastore = DataStoreHandlerUtil.getInstance().getDataStore();
         User user = AuthUtil.getUserFromWebServiceContext(context, datastore);
 
         BankAccount bankAccount = datastore.find(BankAccount.class).field("accountNo").equal(accountNo).get();
-        if(bankAccount == null) {
+        if (bankAccount == null) {
             throw new BankServiceException("Bank account with given no not exists");
         }
-        if(user.containsBankAccount(bankAccount.getAccountNo())) {
+        if (user.containsBankAccount(bankAccount.getAccountNo())) {
             user.removeBankAccount(bankAccount.getAccountNo());
             datastore.delete(bankAccount);
             datastore.save(user);

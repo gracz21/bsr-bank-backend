@@ -15,19 +15,19 @@ import java.util.Map;
  */
 public abstract class AuthUtil {
     public static String getSessionIdFromWebServiceContext(WebServiceContext context) throws AuthException {
-        Map headers = (Map)context.getMessageContext().get(MessageContext.HTTP_REQUEST_HEADERS);
-        ArrayList sessionId = (ArrayList)headers.get("Session-Id");
-        if(sessionId == null) {
+        Map headers = (Map) context.getMessageContext().get(MessageContext.HTTP_REQUEST_HEADERS);
+        ArrayList sessionId = (ArrayList) headers.get("Session-Id");
+        if (sessionId == null) {
             throw new AuthException("Session id is missing");
         }
 
-        return (String)sessionId.get(0);
+        return (String) sessionId.get(0);
     }
 
     public static Session getSessionFromWebServiceContext(WebServiceContext context, Datastore datastore) throws AuthException {
         String sessionId = getSessionIdFromWebServiceContext(context);
         Session session = datastore.find(Session.class).field("sessionId").equal(sessionId).get();
-        if(session == null) {
+        if (session == null) {
             throw new AuthException("User is not logged in or session has expired");
         }
 
@@ -37,7 +37,7 @@ public abstract class AuthUtil {
     public static User getUserFromWebServiceContext(WebServiceContext context, Datastore datastore) throws AuthException {
         Session session = getSessionFromWebServiceContext(context, datastore);
         User user = session.getUser();
-        if(user == null) {
+        if (user == null) {
             datastore.delete(session);
             throw new AuthException("User assigned to this session not exists");
         }

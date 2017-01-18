@@ -19,7 +19,7 @@ public class Withdrawal extends BankOperation {
 
     @Override
     protected void execute(BankAccount bankAccount) throws BankOperationException {
-        if(amount > bankAccount.getBalance()) {
+        if (amount > bankAccount.getBalance()) {
             throw new BankOperationException("Amount bigger than current account balance");
         }
 

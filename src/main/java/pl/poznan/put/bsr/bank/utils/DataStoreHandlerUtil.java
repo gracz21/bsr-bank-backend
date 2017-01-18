@@ -18,7 +18,7 @@ public class DataStoreHandlerUtil {
         morphia.mapPackage("pl.poznan.put.bsr.bank.models");
         dataStore.ensureIndexes();
 
-        if(dataStore.getCount(Counter.class) == 0) {
+        if (dataStore.getCount(Counter.class) == 0) {
             dataStore.save(new Counter("accountNoCounter"));
         }
     }

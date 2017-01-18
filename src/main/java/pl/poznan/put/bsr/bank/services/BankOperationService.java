@@ -51,7 +51,7 @@ public class BankOperationService {
         AuthUtil.getUserFromWebServiceContext(context, datastore);
 
         BankAccount bankAccount = datastore.find(BankAccount.class).field("accountNo").equal(targetAccountNo).get();
-        if(bankAccount == null) {
+        if (bankAccount == null) {
             throw new BankServiceException("Target bank account does not exist");
         }
 
@@ -79,7 +79,7 @@ public class BankOperationService {
         AuthUtil.getUserFromWebServiceContext(context, datastore);
 
         BankAccount bankAccount = datastore.find(BankAccount.class).field("accountNo").equal(targetAccountNo).get();
-        if(bankAccount == null) {
+        if (bankAccount == null) {
             throw new BankServiceException("Target bank account does not exist");
         }
 
@@ -91,8 +91,8 @@ public class BankOperationService {
 
     @WebMethod
     public BankOperation makeWithdrawal(@WebParam(name = "title") @XmlElement(required = true) String title,
-                               @WebParam(name = "amount") @XmlElement(required = true) String amount,
-                               @WebParam(name = "targetAccountNo") @XmlElement(required = true) String targetAccountNo)
+                                        @WebParam(name = "amount") @XmlElement(required = true) String amount,
+                                        @WebParam(name = "targetAccountNo") @XmlElement(required = true) String targetAccountNo)
             throws BankServiceException, BankOperationException, ValidationException, AuthException {
         Map<String, String> parametersMap = new HashMap<String, String>() {{
             put("title", title);
@@ -107,11 +107,11 @@ public class BankOperationService {
         User user = AuthUtil.getUserFromWebServiceContext(context, datastore);
 
         BankAccount bankAccount = datastore.find(BankAccount.class).field("accountNo").equal(targetAccountNo).get();
-        if(bankAccount == null) {
+        if (bankAccount == null) {
             throw new BankServiceException("Target bank account does not exist");
         }
 
-        if(!user.containsBankAccount(targetAccountNo)) {
+        if (!user.containsBankAccount(targetAccountNo)) {
             throw new BankServiceException("Target account does not belong to user");
         }
         Withdrawal withdrawal = new Withdrawal(title, parsedAmount, targetAccountNo);
@@ -122,9 +122,9 @@ public class BankOperationService {
 
     @WebMethod
     public BankOperation makeTransfer(@WebParam(name = "title") @XmlElement(required = true) String title,
-                             @WebParam(name = "amount") @XmlElement(required = true) String amount,
-                             @WebParam(name = "sourceAccountNo") @XmlElement(required = true) String sourceAccountNo,
-                             @WebParam(name = "targetAccountNo") @XmlElement(required = true) String targetAccountNo)
+                                      @WebParam(name = "amount") @XmlElement(required = true) String amount,
+                                      @WebParam(name = "sourceAccountNo") @XmlElement(required = true) String sourceAccountNo,
+                                      @WebParam(name = "targetAccountNo") @XmlElement(required = true) String targetAccountNo)
             throws BankServiceException, BankOperationException, ValidationException, AuthException, IOException {
         Map<String, String> parametersMap = new HashMap<String, String>() {{
             put("title", title);
@@ -140,21 +140,21 @@ public class BankOperationService {
         User user = AuthUtil.getUserFromWebServiceContext(context, datastore);
 
         BankAccount sourceBankAccount = datastore.find(BankAccount.class).field("accountNo").equal(sourceAccountNo).get();
-        if(sourceBankAccount == null) {
+        if (sourceBankAccount == null) {
             throw new BankServiceException("Source bank account does not exist");
         }
-        if(!user.containsBankAccount(sourceAccountNo)) {
+        if (!user.containsBankAccount(sourceAccountNo)) {
             throw new BankServiceException("Source account does not belong to user");
         }
-        if(sourceAccountNo.equals(targetAccountNo)) {
+        if (sourceAccountNo.equals(targetAccountNo)) {
             throw new BankServiceException("Target account is the same as source account");
         }
 
         Transfer outTransfer = new Transfer(title, parsedAmount, sourceAccountNo, targetAccountNo, Transfer.TransferDirection.OUT);
 
-        if(targetAccountNo.substring(2, 10).equals(ConstantsUtil.BANK_ID)) {
+        if (targetAccountNo.substring(2, 10).equals(ConstantsUtil.BANK_ID)) {
             BankAccount targetBankAccount = datastore.find(BankAccount.class).field("accountNo").equal(targetAccountNo).get();
-            if(targetBankAccount == null) {
+            if (targetBankAccount == null) {
                 throw new BankServiceException("Target bank account does not exist");
             }
             Transfer inTransfer = new Transfer(title, parsedAmount, sourceAccountNo, targetAccountNo, Transfer.TransferDirection.IN);
@@ -167,7 +167,7 @@ public class BankOperationService {
     }
 
     private void checkTransferLimit(double amount) throws BankServiceException {
-        if(amount > 1000000){
+        if (amount > 1000000) {
             throw new BankServiceException("Transfer amount is higher than max limit of 1 000 000");
         }
     }
@@ -186,7 +186,7 @@ public class BankOperationService {
             throws BankOperationException, BankServiceException, IOException {
         String bankNo = outTransfer.getTargetAccountNo().substring(2, 10);
         Map<String, String> bankToIpMap = MapBankToIpUtil.getInstance().getBankToIpMap();
-        if(!bankToIpMap.containsKey(bankNo)) {
+        if (!bankToIpMap.containsKey(bankNo)) {
             throw new BankServiceException("Unknown bank of target account");
         }
 
@@ -195,7 +195,7 @@ public class BankOperationService {
         String charset = "UTF-8";
         String url = bankToIpMap.get(bankNo) + "/transfer";
         String data = "{" +
-                "\"amount\":" + (int)(outTransfer.getAmount()*100) + "," +
+                "\"amount\":" + (int) (outTransfer.getAmount() * 100) + "," +
                 "\"sender_account\":" + "\"" + outTransfer.getSourceAccountNo() + "\"," +
                 "\"receiver_account\":" + "\"" + outTransfer.getTargetAccountNo() + "\"," +
                 "\"title\":" + "\"" + outTransfer.getTitle() + "\"}";
@@ -213,16 +213,16 @@ public class BankOperationService {
         connection.connect();
 
         int status = connection.getResponseCode();
-        if(status != 201) {
+        if (status != 201) {
             InputStream response = connection.getErrorStream();
-            if(response != null) {
+            if (response != null) {
                 String message = new String(IOUtils.readFully(response, -1, true));
                 JSONParser parser = new JSONParser();
                 JSONObject obj = null;
                 try {
-                    obj = (JSONObject)parser.parse(message);
-                    if(obj.containsKey("error")) {
-                        throw new BankServiceException((String)obj.get("error"));
+                    obj = (JSONObject) parser.parse(message);
+                    if (obj.containsKey("error")) {
+                        throw new BankServiceException((String) obj.get("error"));
                     } else {
                         throw new BankServiceException("Unknown error occurs");
                     }
