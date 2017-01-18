@@ -7,3 +7,4 @@ Used standards and libraries:
 * Jersey (JSON REST Web Services)
 * Morphia (MongoDB ORM)
 * JAXB (XML marshalling/unmarshalling)
+* JSON Simple (JSON parsing)
