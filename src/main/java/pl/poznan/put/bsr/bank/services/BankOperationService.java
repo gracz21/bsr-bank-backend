@@ -37,11 +37,9 @@ public class BankOperationService {
     private WebServiceContext context;
 
     @WebMethod
-    public BankOperation countFee(@WebParam(name = "amount") @XmlElement(required = true) Double amount,
-                                  @WebParam(name = "targetAccountNo") @XmlElement(required = true) String targetAccountNo)
+    public BankOperation countFee(@WebParam(name = "targetAccountNo") @XmlElement(required = true) String targetAccountNo)
             throws ValidationException, AuthException, BankServiceException, BankOperationException {
         Map<String, Object> parametersMap = new HashMap<String, Object>() {{
-            put("amount", amount);
             put("receiver account no", targetAccountNo);
         }};
         ValidateParamsUtil.validate(parametersMap);
@@ -54,7 +52,7 @@ public class BankOperationService {
             throw new BankServiceException("Target bank account does not exist");
         }
 
-        Fee fee = new Fee(amount, targetAccountNo);
+        Fee fee = new Fee(targetAccountNo);
         fee.doOperation(bankAccount);
         datastore.save(bankAccount);
         return fee;

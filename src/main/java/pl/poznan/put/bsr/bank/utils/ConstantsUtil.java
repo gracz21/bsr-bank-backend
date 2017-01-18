@@ -11,4 +11,5 @@ public abstract class ConstantsUtil {
     public static final String BANK_TO_IP_MAP_FILE_NAME = "bank_to_ip_map.txt";
     public static final String BANK_USERNAME = "admin";
     public static final String BANK_PASSWORD = "admin";
+    public static final double feeAmount = 100.00;
 }
