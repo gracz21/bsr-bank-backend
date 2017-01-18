@@ -39,35 +39,33 @@ public class TransferResource {
     }
 
     private void validateTransferCompleteness(Transfer transfer) {
-        String missingFields = "";
+        String errorMessage = "";
 
-        if(transfer.getAmount() == 0.0) {
-            missingFields += "amount,";
+        if(transfer.getAmount() <= 0.0) {
+            errorMessage += "amount,";
         }
         if(transfer.getTitle() == null || transfer.getTitle().length() == 0) {
-            missingFields += "title,";
+            errorMessage += "title,";
         }
-        if(transfer.getSourceAccountNo() == null || transfer.getSourceAccountNo().length() == 0) {
-            missingFields += "sender_account,";
+        if(transfer.getSourceAccountNo() == null ||
+                !(transfer.getSourceAccountNo().matches("[0-9]+") && transfer.getSourceAccountNo().length() == 26)) {
+            errorMessage += "sender_account,";
         }
-        if(transfer.getTargetAccountNo() == null || transfer.getTargetAccountNo().length() == 0) {
-            missingFields += "receiver_account,";
+        if(transfer.getTargetAccountNo() == null ||
+                !(transfer.getTargetAccountNo().matches("[0-9]+") && transfer.getTargetAccountNo().length() == 26)) {
+            errorMessage += "receiver_account,";
         }
 
-        if(missingFields.length() > 0) {
-            missingFields = missingFields.substring(0, missingFields.length() -1);
+        if(errorMessage.length() > 0) {
+            errorMessage = errorMessage.substring(0, errorMessage.length() -1);
+            errorMessage += " is missing or invalid";
             throw new WebApplicationException(Response.status(Response.Status.BAD_REQUEST).entity("{\n" +
-                    "  \"error\": \"" + missingFields + " is missing\"\n" +
+                    "  \"error\": \"" + errorMessage + "\"\n" +
                     "}").build());
         }
     }
 
     private void prepareTransfer(Transfer transfer) {
-        if(transfer.getAmount() < 0.0) {
-            throw new WebApplicationException(Response.status(Response.Status.NOT_FOUND).entity("{\n" +
-                    "  \"error\": \"amount is negative\"\n" +
-                    "}").build());
-        }
         transfer.setExecuted(false);
         transfer.setAmount(transfer.getAmount()/100);
         transfer.setDirection(Transfer.TransferDirection.IN);
