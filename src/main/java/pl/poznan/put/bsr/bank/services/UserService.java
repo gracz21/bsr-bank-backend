@@ -41,7 +41,7 @@ public class UserService {
             put("first name", firstName);
             put("last name", lastName);
         }};
-        ValidateParamsUtil.validate(parametersMap);
+        ValidateParamsUtil.validatePresence(parametersMap);
 
         Datastore datastore =  DataStoreHandlerUtil.getInstance().getDataStore();
         try {
@@ -59,7 +59,7 @@ public class UserService {
             put("user name", userName);
             put("password", password);
         }};
-        ValidateParamsUtil.validate(parametersMap);
+        ValidateParamsUtil.validatePresence(parametersMap);
 
         Datastore datastore =  DataStoreHandlerUtil.getInstance().getDataStore();
         User user = datastore.find(User.class).field("userName").equal(userName).get();

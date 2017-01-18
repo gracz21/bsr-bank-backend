@@ -44,7 +44,7 @@ public class BankAccountService {
         Map<String, Object> parametersMap = new HashMap<String, Object>() {{
            put("name", name);
         }};
-        ValidateParamsUtil.validate(parametersMap);
+        ValidateParamsUtil.validatePresence(parametersMap);
 
         Datastore datastore =  DataStoreHandlerUtil.getInstance().getDataStore();
         User user = AuthUtil.getUserFromWebServiceContext(context, datastore);
@@ -63,7 +63,7 @@ public class BankAccountService {
         Map<String, Object> parametersMap = new HashMap<String, Object>() {{
             put("account no", accountNo);
         }};
-        ValidateParamsUtil.validate(parametersMap);
+        ValidateParamsUtil.validatePresence(parametersMap);
 
         Datastore datastore =  DataStoreHandlerUtil.getInstance().getDataStore();
         User user = AuthUtil.getUserFromWebServiceContext(context, datastore);

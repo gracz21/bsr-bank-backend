@@ -80,8 +80,8 @@ public abstract class BankOperation {
         if(executed) {
             throw new BankOperationException("Operation has been already executed");
         }
-        if(amount < 0) {
-            throw new BankOperationException("Negative amount");
+        if(amount <= 0) {
+            throw new BankOperationException("Amount cannot be less or equal to 0");
         }
 
         execute(bankAccount);

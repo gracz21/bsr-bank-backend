@@ -42,7 +42,7 @@ public class BankOperationService {
         Map<String, Object> parametersMap = new HashMap<String, Object>() {{
             put("receiver account no", targetAccountNo);
         }};
-        ValidateParamsUtil.validate(parametersMap);
+        ValidateParamsUtil.validatePresence(parametersMap);
 
         Datastore datastore = DataStoreHandlerUtil.getInstance().getDataStore();
         AuthUtil.getUserFromWebServiceContext(context, datastore);
@@ -60,7 +60,7 @@ public class BankOperationService {
 
     @WebMethod
     public BankOperation makePayment(@WebParam(name = "title") @XmlElement(required = true) String title,
-                                     @WebParam(name = "amount") @XmlElement(required = true) Double amount,
+                                     @WebParam(name = "amount") @XmlElement(required = true) String amount,
                                      @WebParam(name = "targetAccountNo") @XmlElement(required = true) String targetAccountNo)
             throws BankServiceException, BankOperationException, ValidationException, AuthException {
         Map<String, Object> parametersMap = new HashMap<String, Object>() {{
@@ -68,9 +68,9 @@ public class BankOperationService {
             put("amount", amount);
             put("receiver account no", targetAccountNo);
         }};
-        ValidateParamsUtil.validate(parametersMap);
-
-        checkTransferLimit(amount);
+        ValidateParamsUtil.validatePresence(parametersMap);
+        double parsedAmount = ValidateParamsUtil.parseAmount(amount);
+        checkTransferLimit(parsedAmount);
 
         Datastore datastore = DataStoreHandlerUtil.getInstance().getDataStore();
         AuthUtil.getUserFromWebServiceContext(context, datastore);
@@ -80,7 +80,7 @@ public class BankOperationService {
             throw new BankServiceException("Target bank account does not exist");
         }
 
-        Payment payment = new Payment(title, amount, targetAccountNo);
+        Payment payment = new Payment(title, parsedAmount, targetAccountNo);
         payment.doOperation(bankAccount);
         datastore.save(bankAccount);
         return payment;
@@ -88,7 +88,7 @@ public class BankOperationService {
 
     @WebMethod
     public BankOperation makeWithdrawal(@WebParam(name = "title") @XmlElement(required = true) String title,
-                               @WebParam(name = "amount") @XmlElement(required = true) double amount,
+                               @WebParam(name = "amount") @XmlElement(required = true) String amount,
                                @WebParam(name = "targetAccountNo") @XmlElement(required = true) String targetAccountNo)
             throws BankServiceException, BankOperationException, ValidationException, AuthException {
         Map<String, Object> parametersMap = new HashMap<String, Object>() {{
@@ -96,9 +96,9 @@ public class BankOperationService {
             put("amount", amount);
             put("receiver account no", targetAccountNo);
         }};
-        ValidateParamsUtil.validate(parametersMap);
-
-        checkTransferLimit(amount);
+        ValidateParamsUtil.validatePresence(parametersMap);
+        double parsedAmount = ValidateParamsUtil.parseAmount(amount);
+        checkTransferLimit(parsedAmount);
 
         Datastore datastore = DataStoreHandlerUtil.getInstance().getDataStore();
         User user = AuthUtil.getUserFromWebServiceContext(context, datastore);
@@ -111,7 +111,7 @@ public class BankOperationService {
         if(!user.containsBankAccount(targetAccountNo)) {
             throw new BankServiceException("Target account does not belong to user");
         }
-        Withdrawal withdrawal = new Withdrawal(title, amount, targetAccountNo);
+        Withdrawal withdrawal = new Withdrawal(title, parsedAmount, targetAccountNo);
         withdrawal.doOperation(bankAccount);
         datastore.save(bankAccount);
         return withdrawal;
@@ -119,7 +119,7 @@ public class BankOperationService {
 
     @WebMethod
     public BankOperation makeTransfer(@WebParam(name = "title") @XmlElement(required = true) String title,
-                             @WebParam(name = "amount") @XmlElement(required = true) double amount,
+                             @WebParam(name = "amount") @XmlElement(required = true) String amount,
                              @WebParam(name = "sourceAccountNo") @XmlElement(required = true) String sourceAccountNo,
                              @WebParam(name = "targetAccountNo") @XmlElement(required = true) String targetAccountNo)
             throws BankServiceException, BankOperationException, ValidationException, AuthException, IOException {
@@ -129,9 +129,9 @@ public class BankOperationService {
             put("sender account no", sourceAccountNo);
             put("receiver account no", targetAccountNo);
         }};
-        ValidateParamsUtil.validate(parametersMap);
-
-        checkTransferLimit(amount);
+        ValidateParamsUtil.validatePresence(parametersMap);
+        double parsedAmount = ValidateParamsUtil.parseAmount(amount);
+        checkTransferLimit(parsedAmount);
 
         Datastore datastore = DataStoreHandlerUtil.getInstance().getDataStore();
         User user = AuthUtil.getUserFromWebServiceContext(context, datastore);
@@ -147,14 +147,14 @@ public class BankOperationService {
             throw new BankServiceException("Target account is the same as source account");
         }
 
-        Transfer outTransfer = new Transfer(title, amount, sourceAccountNo, targetAccountNo, Transfer.TransferDirection.OUT);
+        Transfer outTransfer = new Transfer(title, parsedAmount, sourceAccountNo, targetAccountNo, Transfer.TransferDirection.OUT);
 
         if(targetAccountNo.substring(2, 10).equals(ConstantsUtil.BANK_ID)) {
             BankAccount targetBankAccount = datastore.find(BankAccount.class).field("accountNo").equal(targetAccountNo).get();
             if(targetBankAccount == null) {
                 throw new BankServiceException("Target bank account does not exist");
             }
-            Transfer inTransfer = new Transfer(title, amount, sourceAccountNo, targetAccountNo, Transfer.TransferDirection.IN);
+            Transfer inTransfer = new Transfer(title, parsedAmount, sourceAccountNo, targetAccountNo, Transfer.TransferDirection.IN);
             makeInternalTransfer(datastore, sourceBankAccount, targetBankAccount, inTransfer, outTransfer);
         } else {
             makeExternalTransfer(datastore, sourceBankAccount, outTransfer);
