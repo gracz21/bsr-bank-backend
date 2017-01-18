@@ -63,6 +63,13 @@ public class TransferResource {
                     "  \"error\": \"" + errorMessage + "\"\n" +
                     "}").build());
         }
+
+        if(transfer.getSourceAccountNo().equals(transfer.getTargetAccountNo())) {
+            errorMessage = "sender_account is the same as receiver_account";
+            throw new WebApplicationException(Response.status(Response.Status.BAD_REQUEST).entity("{\n" +
+                    "  \"error\": \"" + errorMessage + "\"\n" +
+                    "}").build());
+        }
     }
 
     private void prepareTransfer(Transfer transfer) {
