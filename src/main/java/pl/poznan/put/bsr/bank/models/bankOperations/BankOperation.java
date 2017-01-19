@@ -89,10 +89,17 @@ public abstract class BankOperation {
         if (amount <= 0) {
             throw new BankOperationException("Amount cannot be less or equal to 0");
         }
+        roundAmountToTwoDecimalPlaces();
 
         execute(bankAccount);
         executed = true;
+
+        bankAccount.roundBalanceToTwoDecimal();
     }
 
     protected abstract void execute(BankAccount bankAccount) throws BankOperationException;
+
+    private void roundAmountToTwoDecimalPlaces() {
+        amount = (int)(amount*100)/100.0;
+    }
 }

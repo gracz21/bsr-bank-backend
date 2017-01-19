@@ -17,6 +17,8 @@ import javax.xml.bind.annotation.XmlElementRef;
 import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlSeeAlso;
 import javax.xml.bind.annotation.XmlTransient;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -89,6 +91,10 @@ public class BankAccount {
         long checkSum = 98 - rest2;
 
         return String.format("%02d", checkSum);
+    }
+
+    public void roundBalanceToTwoDecimal() {
+        balance = new BigDecimal(balance).setScale(2, RoundingMode.HALF_EVEN).doubleValue();
     }
 
     public ObjectId getId() {
