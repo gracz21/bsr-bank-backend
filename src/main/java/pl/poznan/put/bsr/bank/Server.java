@@ -18,19 +18,25 @@ import java.net.URI;
 import java.net.URISyntaxException;
 
 /**
+ * Main server class
  * @author Kamil Walkowiak
  */
 public class Server {
     private static HttpServer server;
 
-    public static void main(String[] args) throws IOException, URISyntaxException {
+    /**
+     * Main application method
+     * @param args run arguments
+     * @throws IOException if server was not able to start
+     */
+    public static void main(String[] args) throws IOException {
         DataStoreHandlerUtil.getInstance().initializeDataStore();
         initializeRESTServer();
         initializeSOAPServer();
         server.start();
     }
 
-    private static void initializeRESTServer() throws IOException, URISyntaxException {
+    private static void initializeRESTServer() {
         MapBankToIpUtil.getInstance().initialize();
         URI baseUri = UriBuilder.fromUri("http://0.0.0.0/").port(ConstantsUtil.REST_PORT).build();
         ResourceConfig config = new CustomResourceConfig();

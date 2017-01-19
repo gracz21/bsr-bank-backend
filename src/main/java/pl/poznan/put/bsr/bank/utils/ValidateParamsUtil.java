@@ -5,9 +5,15 @@ import pl.poznan.put.bsr.bank.exceptions.ValidationException;
 import java.util.Map;
 
 /**
+ * Util class for validating SOAP requests parameters
  * @author Kamil Walkowiak
  */
 public abstract class ValidateParamsUtil {
+    /**
+     * Validate presence and correctness of given parameters
+     * @param parametersMap parameters map where key is parameter name and value is parameter value
+     * @throws ValidationException if parameter(s) is/are missing or invalid
+     */
     public static void validateParameters(Map<String, String> parametersMap) throws ValidationException {
         String errorMessage = "";
 
@@ -31,6 +37,12 @@ public abstract class ValidateParamsUtil {
         }
     }
 
+    /**
+     * Parse given amount String
+     * @param amount amount String
+     * @return parsed amount
+     * @throws ValidationException if amount format is invalid
+     */
     public static double parseAmount(String amount) throws ValidationException {
         amount = amount.replace(",", ".");
         try {

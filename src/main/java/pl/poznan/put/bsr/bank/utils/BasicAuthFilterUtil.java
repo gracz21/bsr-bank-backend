@@ -9,6 +9,7 @@ import javax.ws.rs.core.Response;
 import java.io.IOException;
 
 /**
+ * Class responsible for handling HTTP Basic authentication protocol
  * @author Kamil Walkowiak
  */
 public class BasicAuthFilterUtil implements ContainerRequestFilter {
