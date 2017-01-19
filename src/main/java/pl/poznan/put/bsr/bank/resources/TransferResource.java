@@ -59,9 +59,9 @@ public class TransferResource {
         if (transfer.getTitle() == null || transfer.getTitle().length() == 0 || transfer.getTitle().matches(".*\\p{C}.*")) {
             errorMessage += "title,";
         }
-        if (transfer.getSourceAccountNo() == null || !(transfer.getSourceAccountNo().matches("[0-9]+") &&
-                transfer.getSourceAccountNo().length() == 26) &&
-                BankAccount.validateCheckSum(transfer.getSourceAccountNo())) {
+        if (transfer.getSourceAccountNo() == null || !transfer.getSourceAccountNo().matches("[0-9]+") ||
+                transfer.getSourceAccountNo().length() != 26 ||
+                !BankAccount.validateCheckSum(transfer.getSourceAccountNo())) {
             errorMessage += "sender_account,";
         }
         if (transfer.getTargetAccountNo() == null ||

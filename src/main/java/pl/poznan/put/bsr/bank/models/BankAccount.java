@@ -95,7 +95,7 @@ public class BankAccount {
      * @return true if checksum is valid, false otherwise
      */
     public static boolean validateCheckSum(String fullAccountNo) {
-        String accountNo = fullAccountNo.substring(0, 16);
+        String accountNo = fullAccountNo.substring(2);
         String resultFullAccountNo = generateCheckSum(accountNo) + accountNo;
 
         return fullAccountNo.equals(resultFullAccountNo);

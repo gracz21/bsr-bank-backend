@@ -64,10 +64,11 @@ public abstract class BankOperation {
         roundAmountToTwoDecimalPlaces();
 
         execute(bankAccount);
+        bankAccount.roundBalanceToTwoDecimal();
+        this.balanceAfter = bankAccount.getBalance();
+        bankAccount.addBankOperation(this);
         executed = true;
         timestamp = new Timestamp(System.currentTimeMillis()).toString();
-
-        bankAccount.roundBalanceToTwoDecimal();
     }
 
     /*

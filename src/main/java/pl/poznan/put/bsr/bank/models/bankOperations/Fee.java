@@ -29,7 +29,5 @@ public class Fee extends BankOperation {
     @Override
     protected void execute(BankAccount bankAccount) throws BankOperationException {
         bankAccount.setBalance(bankAccount.getBalance() - amount);
-        this.balanceAfter = bankAccount.getBalance();
-        bankAccount.addBankOperation(this);
     }
 }
