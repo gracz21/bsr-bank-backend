@@ -5,6 +5,7 @@ import org.mongodb.morphia.Datastore;
 import pl.poznan.put.bsr.bank.exceptions.AuthException;
 import pl.poznan.put.bsr.bank.exceptions.BankServiceException;
 import pl.poznan.put.bsr.bank.exceptions.ValidationException;
+import pl.poznan.put.bsr.bank.models.BankAccount;
 import pl.poznan.put.bsr.bank.models.Session;
 import pl.poznan.put.bsr.bank.models.User;
 import pl.poznan.put.bsr.bank.utils.AuthUtil;
@@ -117,6 +118,9 @@ public class UserService {
 
         datastore.delete(session);
         if (user != null) {
+            for(BankAccount bankAccount: user.getBankAccounts()) {
+                datastore.delete(bankAccount);
+            }
             datastore.delete(user);
         } else {
             throw new BankServiceException("User already not exists");
