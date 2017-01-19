@@ -21,7 +21,8 @@ public abstract class ValidateParamsUtil {
             String key = parameter.getKey();
             String value = parameter.getValue();
             if (value == null || value.length() == 0 || value.matches(".*\\p{C}.*") ||
-                    (key.contains("account") && !(value.matches("[0-9]+") && value.length() == 26))) {
+                    (key.contains("account") && !(value.matches("[0-9]+") && value.length() == 26)) ||
+                    ((key.contains("user name") || key.contains("password")) && !value.matches("^[\\p{L}\\p{P}\\d]+$"))) {
                 errorMessage += key + ", ";
             }
         }
