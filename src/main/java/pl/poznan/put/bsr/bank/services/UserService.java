@@ -94,12 +94,22 @@ public class UserService {
     }
 
     /**
+     * Retrieves current logged in user
+     * @return current user
+     * @throws AuthException if authorization process fails
+     */
+    @WebMethod
+    public User getCurrentUser() throws AuthException {
+        Datastore datastore = DataStoreHandlerUtil.getInstance().getDataStore();
+        return AuthUtil.getUserFromWebServiceContext(context, datastore);
+    }
+
+    /**
      * Logs out current user
      * @throws AuthException if authorization process fails
      */
     @WebMethod
     public void logout() throws AuthException {
-        String sessionId = AuthUtil.getSessionIdFromWebServiceContext(context);
         Datastore datastore = DataStoreHandlerUtil.getInstance().getDataStore();
         Session session = AuthUtil.getSessionFromWebServiceContext(context, datastore);
         datastore.delete(session);
