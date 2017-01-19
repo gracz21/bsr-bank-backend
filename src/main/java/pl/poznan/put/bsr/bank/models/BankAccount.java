@@ -67,7 +67,8 @@ public class BankAccount {
     }
 
     private String generateFullAccountNo() {
-        accountNo = generateCheckSum(accountNo) + generateAccountNo();
+        String baseAccountNo = generateAccountNo();
+        accountNo = generateCheckSum(baseAccountNo) + baseAccountNo;
         return accountNo;
     }
 

@@ -84,16 +84,24 @@ public class User {
         this.lastName = lastName;
     }
 
+    /**
+     * Gets unmodifiable list of user bank accounts
+     * @return unmodifiable list of bank accounts
+     */
     public List<BankAccount> getBankAccounts() {
         return Collections.unmodifiableList(bankAccounts);
     }
 
+    /**
+     * Adds bank account to user bank accounts list
+     * @param bankAccount bank account object which should be added
+     */
     public void addBankAccount(BankAccount bankAccount) {
         bankAccounts.add(bankAccount);
     }
 
     /**
-     * Check if user is owner of bank account with given no
+     * Checks if user is owner of bank account with given no
      * @param accountNo account no of which should be checked
      * @return true if user owns given account, false otherwise
      */
@@ -101,6 +109,10 @@ public class User {
         return bankAccounts.stream().filter(bankAccount -> bankAccount.getAccountNo().equals(accountNo)).count() > 0;
     }
 
+    /**
+     * Removes bank account given by ist no from user bank accounts list
+     * @param accountNo no of bank account which should be removed
+     */
     public void removeBankAccount(String accountNo) {
         BankAccount bankAccount = bankAccounts.stream()
                 .filter(account -> account.getAccountNo().equals(accountNo))
