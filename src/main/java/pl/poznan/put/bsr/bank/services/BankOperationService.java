@@ -31,6 +31,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
+ * Web Service class responsible for bank operations on bank accounts
  * @author Kamil Walkowiak
  */
 @WebService
@@ -39,6 +40,15 @@ public class BankOperationService {
     @Resource
     private WebServiceContext context;
 
+    /**
+     * Counts bank fee on given bank account
+     * @param targetAccountNo no of bank account on which bank fee should be counted
+     * @return created count fee bank operation
+     * @throws ValidationException if parameter validation fails
+     * @throws AuthException if authorization process fails
+     * @throws BankServiceException if given bank account does not exists
+     * @throws BankOperationException if bank operation parameters are invalid
+     */
     @WebMethod
     public BankOperation countFee(@WebParam(name = "targetAccountNo") @XmlElement(required = true) String targetAccountNo)
             throws ValidationException, AuthException, BankServiceException, BankOperationException {
@@ -61,6 +71,17 @@ public class BankOperationService {
         return fee;
     }
 
+    /**
+     * Makes payment on given bank account
+     * @param title title of payment operation
+     * @param amount amount of payment operation
+     * @param targetAccountNo on of bank account on which payment should be made
+     * @return created payment bank operation
+     * @throws BankServiceException if given bank account does not exists
+     * @throws BankOperationException if bank operation parameters are invalid
+     * @throws ValidationException if parameter validation fails
+     * @throws AuthException if authorization process fails
+     */
     @WebMethod
     public BankOperation makePayment(@WebParam(name = "title") @XmlElement(required = true) String title,
                                      @WebParam(name = "amount") @XmlElement(required = true) String amount,
@@ -89,6 +110,18 @@ public class BankOperationService {
         return payment;
     }
 
+    /**
+     * Makes withdrawal from given bank account
+     * @param title title of withdrawal operation
+     * @param amount amount of withdrawal operation
+     * @param targetAccountNo no of bank account from which withdrawal should be made
+     * @return created withdrawal bank operation
+     * @throws BankServiceException if withdrawal cannot be made
+     * (user does not own given bank account or bank account does not exists)
+     * @throws BankOperationException if bank operation parameters are invalid
+     * @throws ValidationException if parameter validation fails
+     * @throws AuthException if authorization process fails
+     */
     @WebMethod
     public BankOperation makeWithdrawal(@WebParam(name = "title") @XmlElement(required = true) String title,
                                         @WebParam(name = "amount") @XmlElement(required = true) String amount,
@@ -120,12 +153,26 @@ public class BankOperationService {
         return withdrawal;
     }
 
+    /**
+     * Makes transfer from given internal source account to given internal/external target account
+     * @param title title of transfer operation
+     * @param amount amount of transfer operation
+     * @param sourceAccountNo no of transfer source bank account
+     * @param targetAccountNo no of transfer target bank account
+     * @return created transfer operation
+     * @throws BankServiceException if transfer cannot be made
+     * (source/target bank account does not exist or are the same, user does not own source account,
+     * transfer amount is higher than max limit or bank of target bank account is unknown)
+     * @throws BankOperationException if bank operation parameters are invalid
+     * @throws ValidationException if parameter validation fails
+     * @throws AuthException if authorization process fails
+     */
     @WebMethod
     public BankOperation makeTransfer(@WebParam(name = "title") @XmlElement(required = true) String title,
                                       @WebParam(name = "amount") @XmlElement(required = true) String amount,
                                       @WebParam(name = "sourceAccountNo") @XmlElement(required = true) String sourceAccountNo,
                                       @WebParam(name = "targetAccountNo") @XmlElement(required = true) String targetAccountNo)
-            throws BankServiceException, BankOperationException, ValidationException, AuthException, IOException {
+            throws BankServiceException, BankOperationException, ValidationException, AuthException {
         Map<String, String> parametersMap = new HashMap<String, String>() {{
             put("title", title);
             put("amount", amount);
@@ -160,7 +207,11 @@ public class BankOperationService {
             Transfer inTransfer = new Transfer(title, parsedAmount, sourceAccountNo, targetAccountNo, Transfer.TransferDirection.IN);
             makeInternalTransfer(datastore, sourceBankAccount, targetBankAccount, inTransfer, outTransfer);
         } else {
-            makeExternalTransfer(datastore, sourceBankAccount, outTransfer);
+            try {
+                makeExternalTransfer(datastore, sourceBankAccount, outTransfer);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
 
         return outTransfer;

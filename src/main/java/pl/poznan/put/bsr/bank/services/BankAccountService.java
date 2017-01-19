@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
+ * Web Service class responsible for operations connected with bank accounts
  * @author Kamil Walkowiak
  */
 @WebService
@@ -30,17 +31,29 @@ public class BankAccountService {
     @Resource
     private WebServiceContext context;
 
+    /**
+     * Retrieves bank accounts (with operations history) of current logged in user
+     * @return list of bank accounts of current user
+     * @throws AuthException if authorization process fails
+     */
     @WebMethod
-    public List<BankAccount> getCurrentUserBankAccounts() throws BankServiceException, AuthException {
+    public List<BankAccount> getCurrentUserBankAccounts() throws AuthException {
         Datastore datastore = DataStoreHandlerUtil.getInstance().getDataStore();
         User user = AuthUtil.getUserFromWebServiceContext(context, datastore);
 
         return user.getBankAccounts();
     }
 
+    /**
+     * Creates new bank account for current logged in user
+     * @param name name of new bank account
+     * @return created bank account object
+     * @throws AuthException if authorization process fails
+     * @throws ValidationException if parameter validation fails
+     */
     @WebMethod
     public BankAccount addBankAccount(@WebParam(name = "name") @XmlElement(required = true) String name)
-            throws BankServiceException, AuthException, ValidationException {
+            throws AuthException, ValidationException {
         Map<String, String> parametersMap = new HashMap<String, String>() {{
             put("name", name);
         }};
@@ -57,6 +70,13 @@ public class BankAccountService {
         return bankAccount;
     }
 
+    /**
+     * Removes given bank account
+     * @param accountNo no of bank account which should be deleted
+     * @throws BankServiceException if bank account cannot be deleted (user is not owning it or it does not exists)
+     * @throws AuthException if authorization process fails
+     * @throws ValidationException if parameter validation fails
+     */
     @WebMethod
     public void deleteBankAccount(@WebParam(name = "accountNo") @XmlElement(required = true) String accountNo)
             throws BankServiceException, AuthException, ValidationException {

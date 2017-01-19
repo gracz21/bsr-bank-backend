@@ -12,14 +12,20 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 /**
+ * Class responsible for receiving external transfer to this bank
  * @author Kamil Walkowiak
  */
 @Path("/transfer")
 public class TransferResource {
+    /**
+     * Receive external transfer directed to account in this bank
+     * @param transfer transfer object serialized from request JSON content
+     * @return response status 201
+     */
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response makeTransfer(@NotNull Transfer transfer) throws BankOperationException {
+    public Response makeTransfer(@NotNull Transfer transfer) {
         validateTransfer(transfer);
         prepareTransfer(transfer);
 
@@ -32,7 +38,13 @@ public class TransferResource {
                     "}").build());
         }
 
-        transfer.doOperation(targetBankAccount);
+        try {
+            transfer.doOperation(targetBankAccount);
+        } catch (BankOperationException e) {
+            throw new WebApplicationException(Response.status(Response.Status.BAD_REQUEST).entity("{\n" +
+                    "  \"error\": \"unknown error\"\n" +
+                    "}").build());
+        }
         datastore.save(targetBankAccount);
 
         return Response.created(null).build();
