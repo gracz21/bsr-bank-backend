@@ -13,6 +13,10 @@ import javax.xml.bind.annotation.*;
 @XmlRootElement(name = "transfer")
 @XmlAccessorType(XmlAccessType.FIELD)
 public class Transfer extends BankOperation {
+    /**
+     * Defines transfer object direction
+     * (IN - object represents incoming operation, OUT - object represents outgoing operation)
+     */
     public enum TransferDirection {
         IN, OUT
     }
@@ -23,14 +27,29 @@ public class Transfer extends BankOperation {
     @XmlTransient
     private TransferDirection direction;
 
+    /**
+     * Empty constructor for ORM
+     */
     public Transfer() {
     }
 
+    /**
+     * Creates new transfer object
+     * @param title transfer title
+     * @param amount transfer amount
+     * @param sourceAccountNo transfer source account
+     * @param targetAccountNo transfer target account
+     * @param direction transfer direction (IN or OUT)
+     */
     public Transfer(String title, double amount, String sourceAccountNo, String targetAccountNo, TransferDirection direction) {
         super(title, amount, targetAccountNo);
         this.sourceAccountNo = sourceAccountNo;
         this.direction = direction;
     }
+
+    /*
+    Getter and setter methods for transfer class
+     */
 
     public String getSourceAccountNo() {
         return sourceAccountNo;

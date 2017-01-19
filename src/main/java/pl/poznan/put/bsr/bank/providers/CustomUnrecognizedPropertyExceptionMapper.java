@@ -13,6 +13,11 @@ import javax.ws.rs.ext.Provider;
  */
 @Provider
 public class CustomUnrecognizedPropertyExceptionMapper implements ExceptionMapper<UnrecognizedPropertyException> {
+    /**
+     * Parse exception to requested JSON format
+     * @param e unrecognized JSON property exception
+     * @return response HTTP 400 with explanation in JSON
+     */
     @Override
     public Response toResponse(UnrecognizedPropertyException e) {
         return Response.status(Response.Status.BAD_REQUEST)

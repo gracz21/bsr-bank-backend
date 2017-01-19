@@ -43,17 +43,50 @@ public class BankAccount {
     @Embedded
     private List<BankOperation> history;
 
+    /**
+     * Empty constructor for ORM
+     */
     public BankAccount() {
         if (history == null) {
             history = new ArrayList<>();
         }
     }
 
+    /**
+     * Creates new bank account object
+     * @param name bank account name
+     */
     public BankAccount(String name) {
         this.name = name;
         accountNo = generateFullAccountNo();
         balance = 0.0;
         history = new ArrayList<>();
+    }
+
+    /**
+     * Gets unmodifiable list of bank operations history of this bank account
+     * @return unmodifiable list of bank operations history
+     */
+    @XmlElementWrapper(name = "history")
+    @XmlElementRef()
+    public List<BankOperation> getHistory() {
+        return Collections.unmodifiableList(history);
+    }
+
+    /**
+     * Sets bank account history
+     * @param history bank account history
+     */
+    public void setHistory(List<BankOperation> history) {
+        this.history = history;
+    }
+
+    /**
+     * Adds new bank operation to bank account history
+     * @param bankOperation bank operation which should be added
+     */
+    public void addBankOperation(BankOperation bankOperation) {
+        history.add(bankOperation);
     }
 
     /**
@@ -68,34 +101,16 @@ public class BankAccount {
         return fullAccountNo.equals(resultFullAccountNo);
     }
 
-    private String generateFullAccountNo() {
-        String baseAccountNo = generateAccountNo();
-        accountNo = generateCheckSum(baseAccountNo) + baseAccountNo;
-        return accountNo;
-    }
-
-    private String generateAccountNo() {
-        Datastore datastore = DataStoreHandlerUtil.getInstance().getDataStore();
-        Query<Counter> query = datastore.find(Counter.class, "id", "accountNoCounter");
-        UpdateOperations<Counter> operation = datastore.createUpdateOperations(Counter.class).inc("seq");
-        long count = datastore.findAndModify(query, operation).getSeq();
-        return ConstantsUtil.BANK_ID + String.format("%016d", count);
-    }
-
-    private static String generateCheckSum(String accountNo) {
-        String tmpNo = accountNo + "252100";
-        String part1 = tmpNo.substring(0, 15);
-        String part2 = tmpNo.substring(15);
-        long rest1 = Long.parseLong(part1) % 97;
-        long rest2 = Long.parseLong(rest1 + part2) % 97;
-        long checkSum = 98 - rest2;
-
-        return String.format("%02d", checkSum);
-    }
-
+    /**
+     * Rounds bank account balance to two decimal places using half even rounding method
+     */
     public void roundBalanceToTwoDecimal() {
         balance = new BigDecimal(balance).setScale(2, RoundingMode.HALF_EVEN).doubleValue();
     }
+
+    /*
+    Getter and setter methods for bank account class
+     */
 
     public ObjectId getId() {
         return id;
@@ -129,17 +144,28 @@ public class BankAccount {
         this.balance = balance;
     }
 
-    @XmlElementWrapper(name = "history")
-    @XmlElementRef()
-    public List<BankOperation> getHistory() {
-        return Collections.unmodifiableList(history);
+    private String generateFullAccountNo() {
+        String baseAccountNo = generateAccountNo();
+        accountNo = generateCheckSum(baseAccountNo) + baseAccountNo;
+        return accountNo;
     }
 
-    public void setHistory(List<BankOperation> history) {
-        this.history = history;
+    private String generateAccountNo() {
+        Datastore datastore = DataStoreHandlerUtil.getInstance().getDataStore();
+        Query<Counter> query = datastore.find(Counter.class, "id", "accountNoCounter");
+        UpdateOperations<Counter> operation = datastore.createUpdateOperations(Counter.class).inc("seq");
+        long count = datastore.findAndModify(query, operation).getSeq();
+        return ConstantsUtil.BANK_ID + String.format("%016d", count);
     }
 
-    public void addBankOperation(BankOperation bankOperation) {
-        history.add(bankOperation);
+    private static String generateCheckSum(String accountNo) {
+        String tmpNo = accountNo + "252100";
+        String part1 = tmpNo.substring(0, 15);
+        String part2 = tmpNo.substring(15);
+        long rest1 = Long.parseLong(part1) % 97;
+        long rest2 = Long.parseLong(rest1 + part2) % 97;
+        long checkSum = 98 - rest2;
+
+        return String.format("%02d", checkSum);
     }
 }

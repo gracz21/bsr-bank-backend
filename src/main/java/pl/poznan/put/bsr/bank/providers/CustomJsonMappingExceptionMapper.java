@@ -13,6 +13,11 @@ import javax.ws.rs.ext.Provider;
  */
 @Provider
 public class CustomJsonMappingExceptionMapper implements ExceptionMapper<JsonMappingException> {
+    /**
+     * Parse exception to requested JSON format
+     * @param e JSON mapping exception
+     * @return response HTTP 400 with explanation in JSON
+     */
     @Override
     public Response toResponse(JsonMappingException e) {
         String message;

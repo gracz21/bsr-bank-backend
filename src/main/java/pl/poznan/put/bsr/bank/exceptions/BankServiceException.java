@@ -5,12 +5,11 @@ package pl.poznan.put.bsr.bank.exceptions;
  * @author Kamil Walkowiak
  */
 public class BankServiceException extends Exception {
-    public BankServiceException() {
-    }
-
+    /**
+     * Creates new bank service exception
+     * @param message exception explanation message
+     */
     public BankServiceException(String message) {
         super(message);
     }
-
-
 }

@@ -27,15 +27,48 @@ public abstract class BankOperation {
     @XmlTransient
     protected boolean executed;
 
+    /**
+     * Empty constructor for ORM
+     */
     public BankOperation() {
     }
 
+    /**
+     * Creates new bank operation object
+     * @param title bank operation title
+     * @param amount bank operation amount
+     * @param targetAccountNo bank operation target account
+     */
     BankOperation(String title, double amount, String targetAccountNo) {
         this.title = title;
         this.amount = amount;
         this.targetAccountNo = targetAccountNo;
         this.executed = false;
     }
+
+    /**
+     * Execute this bank operation
+     * @param bankAccount bank account on which this operation will be executed
+     * @throws BankOperationException if bank operation parameters are invalid
+     */
+    public void doOperation(BankAccount bankAccount) throws BankOperationException {
+        if (executed) {
+            throw new BankOperationException("Operation has been already executed");
+        }
+        if (amount <= 0) {
+            throw new BankOperationException("Amount cannot be less or equal to 0");
+        }
+        roundAmountToTwoDecimalPlaces();
+
+        execute(bankAccount);
+        executed = true;
+
+        bankAccount.roundBalanceToTwoDecimal();
+    }
+
+    /*
+    Getter and setter methods for bank operation class
+     */
 
     public String getTitle() {
         return title;
@@ -75,26 +108,6 @@ public abstract class BankOperation {
 
     public void setExecuted(boolean executed) {
         this.executed = executed;
-    }
-
-    /**
-     * Execute this bank operation
-     * @param bankAccount bank account on which this operation will be executed
-     * @throws BankOperationException if bank operation parameters are invalid
-     */
-    public void doOperation(BankAccount bankAccount) throws BankOperationException {
-        if (executed) {
-            throw new BankOperationException("Operation has been already executed");
-        }
-        if (amount <= 0) {
-            throw new BankOperationException("Amount cannot be less or equal to 0");
-        }
-        roundAmountToTwoDecimalPlaces();
-
-        execute(bankAccount);
-        executed = true;
-
-        bankAccount.roundBalanceToTwoDecimal();
     }
 
     protected abstract void execute(BankAccount bankAccount) throws BankOperationException;

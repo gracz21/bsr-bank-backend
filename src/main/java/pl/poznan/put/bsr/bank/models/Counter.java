@@ -16,13 +16,24 @@ public class Counter {
     @NotNull
     private long seq;
 
+    /**
+     * Empty constructor for ORM
+     */
     public Counter() {
     }
 
+    /**
+     * Creates new counter object
+     * @param id counter identifier
+     */
     public Counter(String id) {
         this.id = id;
         this.seq = 0;
     }
+
+    /*
+    Getter and setter methods for counter class
+     */
 
     public String getId() {
         return id;

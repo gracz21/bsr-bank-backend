@@ -11,9 +11,18 @@ import javax.xml.bind.annotation.XmlRootElement;
  */
 @XmlRootElement(name = "withdrawal")
 public class Withdrawal extends BankOperation {
+    /**
+     * Empty constructor for ORM
+     */
     public Withdrawal() {
     }
 
+    /**
+     * Creates new withdrawal object
+     * @param title withdrawal title
+     * @param amount withdrawal amount
+     * @param targetAccountNo withdrawal target account
+     */
     public Withdrawal(String title, double amount, String targetAccountNo) {
         super(title, amount, targetAccountNo);
     }

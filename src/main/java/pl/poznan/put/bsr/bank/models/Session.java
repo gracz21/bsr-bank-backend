@@ -26,14 +26,26 @@ public class Session {
     @NotNull
     private String timestamp;
 
+    /**
+     * Empty constructor for ORM
+     */
     public Session() {
     }
 
+    /**
+     * Creates new user session object
+     * @param sessionId session id
+     * @param user user connected to this session
+     */
     public Session(String sessionId, User user) {
         this.sessionId = sessionId;
         this.user = user;
         this.timestamp = new Timestamp(System.currentTimeMillis()).toString();
     }
+
+    /*
+    Getter and setter methods for session class
+     */
 
     public ObjectId getId() {
         return id;
