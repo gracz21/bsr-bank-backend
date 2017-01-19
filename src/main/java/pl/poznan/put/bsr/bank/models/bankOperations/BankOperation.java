@@ -6,6 +6,7 @@ import pl.poznan.put.bsr.bank.models.BankAccount;
 
 import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.*;
+import java.sql.Timestamp;
 
 /**
  * Abstract parent bank operation class
@@ -26,6 +27,8 @@ public abstract class BankOperation {
     protected String targetAccountNo;
     @XmlTransient
     protected boolean executed;
+    @NotNull
+    protected String timestamp;
 
     /**
      * Empty constructor for ORM
@@ -62,6 +65,7 @@ public abstract class BankOperation {
 
         execute(bankAccount);
         executed = true;
+        timestamp = new Timestamp(System.currentTimeMillis()).toString();
 
         bankAccount.roundBalanceToTwoDecimal();
     }
@@ -108,6 +112,14 @@ public abstract class BankOperation {
 
     public void setExecuted(boolean executed) {
         this.executed = executed;
+    }
+
+    public String getTimestamp() {
+        return timestamp;
+    }
+
+    public void setTimestamp(String timestamp) {
+        this.timestamp = timestamp;
     }
 
     protected abstract void execute(BankAccount bankAccount) throws BankOperationException;
