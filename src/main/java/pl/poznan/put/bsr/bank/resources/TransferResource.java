@@ -1,5 +1,6 @@
 package pl.poznan.put.bsr.bank.resources;
 
+import org.json.simple.JSONObject;
 import org.mongodb.morphia.Datastore;
 import pl.poznan.put.bsr.bank.exceptions.BankOperationException;
 import pl.poznan.put.bsr.bank.models.BankAccount;
@@ -53,10 +54,10 @@ public class TransferResource {
     private void validateTransfer(Transfer transfer) {
         String errorMessage = "";
 
-        if (transfer.getAmount() <= 0.0) {
+        if (transfer.getAmount() <= 0.0 || transfer.getAmount() > 1000000) {
             errorMessage += "amount,";
         }
-        if (transfer.getTitle() == null || transfer.getTitle().length() == 0 || transfer.getTitle().matches(".*\\p{C}.*")) {
+        if (transfer.getTitle() == null || transfer.getTitle().length() == 0) {
             errorMessage += "title,";
         }
         if (transfer.getSourceAccountNo() == null || !transfer.getSourceAccountNo().matches("[0-9]+") ||
@@ -86,6 +87,7 @@ public class TransferResource {
     }
 
     private void prepareTransfer(Transfer transfer) {
+        transfer.setTitle(JSONObject.escape(transfer.getTitle()));
         transfer.setExecuted(false);
         transfer.setAmount(transfer.getAmount() / 100);
         transfer.setDirection(Transfer.TransferDirection.IN);

@@ -2,10 +2,12 @@ package pl.poznan.put.bsr.bank.models.bankOperations;
 
 import org.mongodb.morphia.annotations.Embedded;
 import pl.poznan.put.bsr.bank.exceptions.BankOperationException;
+import pl.poznan.put.bsr.bank.exceptions.BankServiceException;
 import pl.poznan.put.bsr.bank.models.BankAccount;
 
 import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.*;
+import java.math.BigDecimal;
 import java.sql.Timestamp;
 
 /**
@@ -61,7 +63,9 @@ public abstract class BankOperation {
         if (amount <= 0) {
             throw new BankOperationException("Amount cannot be less or equal to 0");
         }
-        roundAmountToTwoDecimalPlaces();
+        if (BigDecimal.valueOf(amount).scale() > 2) {
+            throw new BankOperationException("Amount format is invalid");
+        }
 
         execute(bankAccount);
         bankAccount.roundBalanceToTwoDecimal();

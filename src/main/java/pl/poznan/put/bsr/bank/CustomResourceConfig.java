@@ -5,6 +5,7 @@ import org.glassfish.jersey.server.ResourceConfig;
 import pl.poznan.put.bsr.bank.providers.CustomJsonMappingExceptionMapper;
 import pl.poznan.put.bsr.bank.providers.CustomJsonProcessingExceptionMapper;
 import pl.poznan.put.bsr.bank.providers.CustomUnrecognizedPropertyExceptionMapper;
+import pl.poznan.put.bsr.bank.providers.EmptyRequestsFilter;
 import pl.poznan.put.bsr.bank.utils.BasicAuthFilterUtil;
 
 /**
@@ -18,5 +19,6 @@ class CustomResourceConfig extends ResourceConfig {
         register(CustomUnrecognizedPropertyExceptionMapper.class);
         register(CustomJsonMappingExceptionMapper.class);
         register(CustomJsonProcessingExceptionMapper.class);
+        register(EmptyRequestsFilter.class);
     }
 }
