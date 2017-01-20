@@ -2,7 +2,6 @@ package pl.poznan.put.bsr.bank.models.bankOperations;
 
 import org.mongodb.morphia.annotations.Embedded;
 import pl.poznan.put.bsr.bank.exceptions.BankOperationException;
-import pl.poznan.put.bsr.bank.exceptions.BankServiceException;
 import pl.poznan.put.bsr.bank.models.BankAccount;
 
 import javax.validation.constraints.NotNull;
