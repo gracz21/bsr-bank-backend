@@ -128,8 +128,4 @@ public abstract class BankOperation {
     }
 
     protected abstract void execute(BankAccount bankAccount) throws BankOperationException;
-
-    private void roundAmountToTwoDecimalPlaces() {
-        amount = (int)(amount*100)/100.0;
-    }
 }
